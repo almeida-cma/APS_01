@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Loja Online - Simulação BPMN Completa</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #0f3460, #16213e);
+            border-radius: 20px;
+            padding: 25px 30px;
+            margin-bottom: 25px;
+            text-align: center;
+            border-bottom: 3px solid #e94560;
+        }
+
+        .header h1 {
+            color: white;
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #ccc;
+            font-size: 0.9rem;
+        }
+
+        .badge {
+            display: inline-block;
+            background: #e94560;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin-top: 10px;
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-bottom: 25px;
+        }
+
+        @media (max-width: 900px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .bpmn-container {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        }
+
+        .bpmn-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #333;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .bpmn-diagram {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            min-height: 550px;
+            overflow-x: auto;
+        }
+
+        .bpmn-pool {
+            border: 2px solid #667eea;
+            border-radius: 12px;
+            background: #f0f2ff;
+            margin-bottom: 20px;
+        }
+
+        .pool-title {
+            background: #667eea;
+            color: white;
+            padding: 8px 15px;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .lanes {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .lane {
+            border-top: 1px dashed #667eea;
+            padding: 15px;
+        }
+
+        .lane-title {
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 0.85rem;
+        }
+
+        .flow-steps {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .bpmn-node {
+            background: white;
+            border-radius: 12px;
+            padding: 12px 18px;
+            min-width: 100px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+            border: 2px solid #ddd;
+            font-size: 0.85rem;
+        }
+
+        .bpmn-node.active {
+            border-color: #ff9800;
+            background: #fff3e0;
+            box-shadow: 0 0 0 3px #ff9800;
+            transform: scale(1.02);
+        }
+
+        .bpmn-node.completed {
+            border-color: #06d6a0;
+            background: #e8f5e9;
+        }
+
+        .bpmn-node.failed {
+            border-color: #f44336;
+            background: #ffebee;
+        }
+
+        .bpmn-node.gateway {
+            background: #fff3e0;
+            border-color: #ff9800;
+            font-weight: bold;
+        }
+
+        .bpmn-node.event-start {
+            background: #c8e6c9;
+            border-color: #4caf50;
+        }
+
+        .bpmn-node.event-end {
+            background: #ffcdd2;
+            border-color: #f44336;
+        }
+
+        .bpmn-node.event-message {
+            background: #e3f2fd;
+            border-color: #2196f3;
+        }
+
+        .arrow {
+            font-size: 1.2rem;
+            color: #999;
+        }
+
+        .decision-branches {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px dashed #ccc;
+        }
+
+        .branch {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .branch-label {
+            font-weight: bold;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+        }
+
+        .branch-label.success {
+            background: #4caf50;
+            color: white;
+        }
+
+        .branch-label.error {
+            background: #f44336;
+            color: white;
+        }
+
+        .store-container {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        }
+
+        .products {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .product-card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid #e0e0e0;
+        }
+
+        .product-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-color: #667eea;
+        }
+
+        .product-icon {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .product-name {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .product-price {
+            color: #e94560;
+            font-weight: bold;
+            margin: 5px 0;
+        }
+
+        .cart {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .cart-total {
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-top: 15px;
+            text-align: right;
+            color: #e94560;
+        }
+
+        .payment-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .payment-options {
+            display: flex;
+            gap: 15px;
+            margin: 15px 0;
+            flex-wrap: wrap;
+        }
+
+        .payment-option {
+            flex: 1;
+            padding: 12px;
+            background: white;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            border: 2px solid #ddd;
+            transition: all 0.3s;
+        }
+
+        .payment-option.selected {
+            border-color: #06d6a0;
+            background: #f0fff4;
+        }
+
+        .order-status {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+        }
+
+        .status-steps {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .status-step {
+            text-align: center;
+            flex: 1;
+            padding: 8px;
+            border-radius: 10px;
+            background: white;
+            font-size: 0.75rem;
+            transition: all 0.3s;
+        }
+
+        .status-step.active {
+            background: #ff9800;
+            color: white;
+        }
+
+        .status-step.completed {
+            background: #06d6a0;
+            color: white;
+        }
+
+        .status-step.failed {
+            background: #f44336;
+            color: white;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            width: 100%;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102,126,234,0.4);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-danger {
+            background: #e94560;
+            color: white;
+        }
+
+        .btn-reset {
+            background: #6c757d;
+            color: white;
+            margin-top: 10px;
+        }
+
+        .btn-reset:hover {
+            background: #5a6268;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            visibility: hidden;
+            opacity: 0;
+            transition: all 0.3s;
+        }
+
+        .modal.show {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #1a1a2e;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 12px;
+            border-left: 4px solid #06d6a0;
+            z-index: 1000;
+            animation: slideIn 0.3s ease;
+        }
+
+        .notification.error {
+            border-left-color: #f44336;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        footer {
+            text-align: center;
+            color: #888;
+            font-size: 0.75rem;
+            margin-top: 30px;
+        }
+
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #ddd;
+            font-size: 0.7rem;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>🛒 Loja Online - Simulação BPMN Completa</h1>
+        <p>Processo: "Pedido simples de compra online" | Fluxos SIM e NÃO implementados</p>
+        <div class="badge">📊 BPMN: Evento Início | Tarefas | Gateway Decisão (SIM/NÃO) | Evento Mensagem | Evento Fim</div>
+    </div>
+
+    <div class="main-grid">
+        <div class="bpmn-container">
+            <div class="bpmn-title">
+                📋 Diagrama BPMN - Processo de Pedido
+                <span style="font-size:0.7rem; background:#f0f0f0; padding:2px 8px; border-radius:10px;">Pool: Loja Online</span>
+            </div>
+            <div class="bpmn-diagram">
+                <div class="bpmn-pool">
+                    <div class="pool-title">🏪 Loja Online</div>
+                    <div class="lanes">
+                        <div class="lane">
+                            <div class="lane-title">👤 Cliente</div>
+                            <div class="flow-steps">
+                                <div id="stepStart" class="bpmn-node event-start">🟢<br>Início</div>
+                                <span class="arrow">→</span>
+                                <div id="stepSelectProduct" class="bpmn-node">📦<br>Selecionar<br>Produto</div>
+                                <span class="arrow">→</span>
+                                <div id="stepMessage" class="bpmn-node event-message">📩<br>Enviar Dados<br>do Pedido</div>
+                            </div>
+                        </div>
+                        <div class="lane">
+                            <div class="lane-title">⚙️ Sistema</div>
+                            <div class="flow-steps" style="margin-bottom: 15px;">
+                                <div id="stepProcess" class="bpmn-node">🔄<br>Processar<br>Pedido</div>
+                                <span class="arrow">→</span>
+                                <div id="stepGateway" class="bpmn-node gateway">🔷<br>Pagamento<br>Aprovado?</div>
+                            </div>
+                            <div class="decision-branches">
+                                <div class="branch">
+                                    <span class="branch-label success">✅ SIM</span>
+                                    <div class="flow-steps">
+                                        <div id="stepConfirm" class="bpmn-node">✓<br>Confirmar<br>Pedido</div>
+                                        <span class="arrow">→</span>
+                                        <div id="stepEndSuccess" class="bpmn-node event-end">🏁<br>Pedido<br>Concluído</div>
+                                    </div>
+                                </div>
+                                <div class="branch">
+                                    <span class="branch-label error">❌ NÃO</span>
+                                    <div class="flow-steps">
+                                        <div id="stepNotify" class="bpmn-node">📧<br>Notificar<br>Falha</div>
+                                        <span class="arrow">→</span>
+                                        <div id="stepEndFail" class="bpmn-node event-end">🚫<br>Pedido<br>Cancelado</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="legend">
+                    <div class="legend-item"><div class="legend-color" style="background:#c8e6c9;"></div> Evento Início</div>
+                    <div class="legend-item"><div class="legend-color" style="background:white; border:2px solid #ddd;"></div> Tarefa</div>
+                    <div class="legend-item"><div class="legend-color" style="background:#fff3e0; border:2px solid #ff9800;"></div> Gateway Decisão</div>
+                    <div class="legend-item"><div class="legend-color" style="background:#e3f2fd;"></div> Evento Mensagem</div>
+                    <div class="legend-item"><div class="legend-color" style="background:#ffcdd2;"></div> Evento Fim</div>
+                    <div class="legend-item"><div class="legend-color" style="background:#ff9800;"></div> Passo Atual</div>
+                    <div class="legend-item"><div class="legend-color" style="background:#06d6a0;"></div> Concluído</div>
+                    <div class="legend-item"><div class="legend-color" style="background:#f44336;"></div> Falha/Cancelado</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="store-container">
+            <div class="store-title">🛍️ Loja Virtual</div>
+            
+            <div class="products" id="products">
+                <div class="product-card" data-id="1" data-name="Camiseta Geek" data-price="79.90">
+                    <div class="product-icon">👕</div>
+                    <div class="product-name">Camiseta Geek</div>
+                    <div class="product-price">R$ 79,90</div>
+                </div>
+                <div class="product-card" data-id="2" data-name="Caneca Programador" data-price="39.90">
+                    <div class="product-icon">☕</div>
+                    <div class="product-name">Caneca Programador</div>
+                    <div class="product-price">R$ 39,90</div>
+                </div>
+                <div class="product-card" data-id="3" data-name="Mouse Gamer" data-price="149.90">
+                    <div class="product-icon">🖱️</div>
+                    <div class="product-name">Mouse Gamer</div>
+                    <div class="product-price">R$ 149,90</div>
+                </div>
+                <div class="product-card" data-id="4" data-name="Teclado Mecânico" data-price="299.90">
+                    <div class="product-icon">⌨️</div>
+                    <div class="product-name">Teclado Mecânico</div>
+                    <div class="product-price">R$ 299,90</div>
+                </div>
+            </div>
+
+            <div class="cart">
+                <h4>🛒 Carrinho</h4>
+                <div id="cartItems"></div>
+                <div class="cart-total" id="cartTotal">Total: R$ 0,00</div>
+            </div>
+
+            <div class="payment-section">
+                <h4>💳 Forma de Pagamento</h4>
+                <div class="payment-options" id="paymentOptions">
+                    <div class="payment-option" data-payment="card">💳 Cartão (80% aprovação)</div>
+                    <div class="payment-option" data-payment="pix">📱 PIX (100% aprovação)</div>
+                    <div class="payment-option" data-payment="boleto">📄 Boleto (70% aprovação)</div>
+                </div>
+                <button id="processPaymentBtn" class="btn btn-primary" disabled>💳 Finalizar Compra</button>
+                <button id="resetFlowBtn" class="btn btn-reset" style="width:100%; margin-top:10px;">🔄 Reiniciar Fluxo BPMN</button>
+            </div>
+
+            <div class="order-status">
+                <h4>📊 Status do Fluxo BPMN</h4>
+                <div class="status-steps" id="statusSteps">
+                    <div class="status-step" data-step="start">🟢 Início</div>
+                    <div class="status-step" data-step="select">📦 Selecionar</div>
+                    <div class="status-step" data-step="message">📩 Mensagem</div>
+                    <div class="status-step" data-step="process">🔄 Processar</div>
+                    <div class="status-step" data-step="gateway">🔷 Decisão</div>
+                    <div class="status-step" data-step="confirm">✓ Confirmar</div>
+                    <div class="status-step" data-step="end_success">🏁 Sucesso</div>
+                    <div class="status-step" data-step="notify">📧 Notificar</div>
+                    <div class="status-step" data-step="end_fail">🚫 Cancelado</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>© BPMN Pedagógico Completo | Pool: Loja Online | Lanes: Cliente e Sistema | Gateway Exclusivo com Fluxos SIM e NÃO | Evento Intermediário de Mensagem</p>
+    </footer>
+</div>
+
+<div id="resultModal" class="modal">
+    <div class="modal-content">
+        <h2 id="modalTitle"></h2>
+        <p id="modalMessage"></p>
+        <button class="btn btn-primary" onclick="closeModal()">Fechar</button>
+    </div>
+</div>
+
+<script>
+    // Estado do fluxo BPMN
+    let currentStep = 'start';
+    let isFlowActive = true;
+    let isPaymentProcessed = false;
+    let flowResult = null; // 'success' ou 'fail'
+    
+    // Estado da loja
+    let cart = [];
+    let selectedPayment = null;
+    
+    // Mapeamento dos passos do fluxo
+    const steps = {
+        start: { order: 0, name: 'Início', bpmnId: 'stepStart' },
+        select: { order: 1, name: 'Selecionar Produto', bpmnId: 'stepSelectProduct' },
+        message: { order: 2, name: 'Enviar Mensagem', bpmnId: 'stepMessage' },
+        process: { order: 3, name: 'Processar Pedido', bpmnId: 'stepProcess' },
+        gateway: { order: 4, name: 'Decisão Pagamento', bpmnId: 'stepGateway' },
+        confirm: { order: 5, name: 'Confirmar Pedido', bpmnId: 'stepConfirm' },
+        end_success: { order: 6, name: 'Pedido Concluído', bpmnId: 'stepEndSuccess' },
+        notify: { order: 5, name: 'Notificar Falha', bpmnId: 'stepNotify' },
+        end_fail: { order: 6, name: 'Pedido Cancelado', bpmnId: 'stepEndFail' }
+    };
+    
+    const successFlow = ['start', 'select', 'message', 'process', 'gateway', 'confirm', 'end_success'];
+    const failFlow = ['start', 'select', 'message', 'process', 'gateway', 'notify', 'end_fail'];
+    
+    function updateBPMNVisual() {
+        // Reset todos os elementos
+        Object.keys(steps).forEach(stepKey => {
+            const el = document.getElementById(steps[stepKey].bpmnId);
+            if (el) {
+                el.classList.remove('active', 'completed', 'failed');
+            }
+        });
+        
+        // Determinar qual fluxo está ativo
+        const currentFlow = flowResult === 'fail' ? failFlow : (flowResult === 'success' ? successFlow : successFlow);
+        const currentIndex = currentFlow.indexOf(currentStep);
+        
+        // Marcar steps completados
+        for (let i = 0; i < currentIndex; i++) {
+            const step = currentFlow[i];
+            const el = document.getElementById(steps[step].bpmnId);
+            if (el) {
+                if (flowResult === 'fail' && (step === 'end_fail' || step === 'notify')) {
+                    el.classList.add('failed');
+                } else {
+                    el.classList.add('completed');
+                }
+            }
+        }
+        
+        // Marcar step atual como ativo se não for fim
+        if (currentIndex < currentFlow.length && currentStep !== 'end_success' && currentStep !== 'end_fail') {
+            const currentStepObj = steps[currentStep];
+            if (currentStepObj) {
+                const el = document.getElementById(currentStepObj.bpmnId);
+                if (el) el.classList.add('active');
+            }
+        }
+        
+        // Para fluxo de falha, marcar como failed
+        if (flowResult === 'fail' && (currentStep === 'end_fail' || currentStep === 'notify')) {
+            const el = document.getElementById(steps.end_fail.bpmnId);
+            if (el) el.classList.add('failed');
+            const notifyEl = document.getElementById(steps.notify.bpmnId);
+            if (notifyEl) notifyEl.classList.add('failed');
+        }
+        
+        updateStatusUI();
+    }
+    
+    function updateStatusUI() {
+        const currentFlow = flowResult === 'fail' ? failFlow : successFlow;
+        const currentIndex = currentFlow.indexOf(currentStep);
+        
+        // Reset todos os status steps
+        document.querySelectorAll('.status-step').forEach(el => {
+            el.classList.remove('active', 'completed', 'failed');
+        });
+        
+        // Marcar steps no fluxo atual
+        for (let i = 0; i < currentFlow.length; i++) {
+            const step = currentFlow[i];
+            const element = document.querySelector(`.status-step[data-step="${step}"]`);
+            if (element) {
+                if (i < currentIndex) {
+                    element.classList.add('completed');
+                } else if (i === currentIndex && isFlowActive) {
+                    element.classList.add('active');
+                }
+            }
+        }
+        
+        // Se for fluxo de falha, marcar como failed
+        if (flowResult === 'fail') {
+            const endFailEl = document.querySelector('.status-step[data-step="end_fail"]');
+            if (endFailEl) endFailEl.classList.add('failed');
+            const notifyEl = document.querySelector('.status-step[data-step="notify"]');
+            if (notifyEl) notifyEl.classList.add('failed');
+        }
+    }
+    
+    function advanceToNextStep() {
+        if (!isFlowActive) return;
+        
+        const currentFlowArray = flowResult === 'fail' ? failFlow : successFlow;
+        const currentIndex = currentFlowArray.indexOf(currentStep);
+        
+        if (currentIndex < currentFlowArray.length - 1) {
+            const nextStep = currentFlowArray[currentIndex + 1];
+            currentStep = nextStep;
+            updateBPMNVisual();
+            addNotification(`📌 BPMN: Avançando para "${steps[currentStep].name}"`, 'info');
+            
+            if (currentStep === 'end_success') {
+                isFlowActive = false;
+                addNotification('🎉 Processo BPMN concluído com SUCESSO!', 'success');
+                document.getElementById('processPaymentBtn').disabled = true;
+            } else if (currentStep === 'end_fail') {
+                isFlowActive = false;
+                addNotification('❌ Processo BPMN concluído com FALHA - Pedido cancelado', 'error');
+                document.getElementById('processPaymentBtn').disabled = true;
+            }
+        }
+    }
+    
+    function resetFlow() {
+        currentStep = 'start';
+        isFlowActive = true;
+        isPaymentProcessed = false;
+        flowResult = null;
+        
+        cart = [];
+        selectedPayment = null;
+        
+        updateCart();
+        
+        document.querySelectorAll('.payment-option').forEach(opt => {
+            opt.classList.remove('selected');
+        });
+        
+        document.getElementById('processPaymentBtn').disabled = true;
+        
+        updateBPMNVisual();
+        
+        addNotification('🔄 Fluxo BPMN reiniciado! Início do processo.', 'success');
+        document.getElementById('resultModal').classList.remove('show');
+    }
+    
+    function addToCart(product) {
+        if (!isFlowActive) {
+            addNotification('⚠️ Fluxo finalizado. Clique em "Reiniciar Fluxo BPMN" para continuar.', 'warning');
+            return;
+        }
+        
+        if (currentStep === 'start') {
+            cart.push(product);
+            updateCart();
+            addNotification(`🛒 ${product.name} adicionado ao carrinho!`, 'success');
+            currentStep = 'select';
+            updateBPMNVisual();
+        } else if (currentStep === 'select') {
+            cart.push(product);
+            updateCart();
+            addNotification(`🛒 ${product.name} adicionado ao carrinho!`, 'success');
+        } else {
+            addNotification(`⚠️ Aguarde: estamos na fase de "${steps[currentStep].name}". Complete o processo atual.`, 'warning');
+        }
+        
+        if (cart.length > 0 && (currentStep === 'select' || currentStep === 'message' || currentStep === 'process') && !isPaymentProcessed) {
+            document.getElementById('processPaymentBtn').disabled = false;
+        }
+    }
+    
+    function removeFromCart(index) {
+        const removed = cart[index];
+        cart.splice(index, 1);
+        updateCart();
+        addNotification(`🗑️ ${removed.name} removido do carrinho.`, 'info');
+        
+        if (cart.length === 0 && !isPaymentProcessed) {
+            document.getElementById('processPaymentBtn').disabled = true;
+        }
+    }
+    
+    function updateCart() {
+        const cartContainer = document.getElementById('cartItems');
+        const totalSpan = document.getElementById('cartTotal');
+        
+        if (cart.length === 0) {
+            cartContainer.innerHTML = '<p style="color:#999; text-align:center;">Carrinho vazio</p>';
+            totalSpan.innerHTML = 'Total: R$ 0,00';
+            return;
+        }
+        
+        let html = '';
+        let total = 0;
+        cart.forEach((item, idx) => {
+            total += item.price;
+            html += `
+                <div class="cart-item">
+                    <span>${item.name}</span>
+                    <span>R$ ${item.price.toFixed(2)}</span>
+                    <button onclick="removeFromCart(${idx})" style="background:#e94560; color:white; border:none; border-radius:5px; padding:2px 8px; cursor:pointer;">✗</button>
+                </div>
+            `;
+        });
+        cartContainer.innerHTML = html;
+        totalSpan.innerHTML = `Total: R$ ${total.toFixed(2)}`;
+    }
+    
+    function processPayment() {
+        if (cart.length === 0) {
+            addNotification('⚠️ Adicione produtos ao carrinho primeiro!', 'warning');
+            return;
+        }
+        
+        if (!selectedPayment) {
+            addNotification('⚠️ Selecione uma forma de pagamento!', 'warning');
+            return;
+        }
+        
+        if (!isFlowActive) {
+            addNotification('⚠️ Fluxo já finalizado. Reinicie para fazer nova compra.', 'warning');
+            return;
+        }
+        
+        if (currentStep !== 'select' && currentStep !== 'message' && currentStep !== 'process') {
+            addNotification(`⚠️ Aguarde: estamos na fase "${steps[currentStep].name}". O pagamento deve ser processado após selecionar produtos.`, 'warning');
+            return;
+        }
+        
+        if (isPaymentProcessed) {
+            addNotification('⚠️ Pagamento já foi processado!', 'warning');
+            return;
+        }
+        
+        // Avançar até process se necessário
+        if (currentStep === 'select') {
+            currentStep = 'message';
+            updateBPMNVisual();
+            addNotification('📩 Enviando dados do pedido...', 'info');
+            setTimeout(() => {
+                currentStep = 'process';
+                updateBPMNVisual();
+                continuePayment();
+            }, 800);
+        } else {
+            continuePayment();
+        }
+    }
+    
+    function continuePayment() {
+        addNotification('💳 Processando pagamento...', 'info');
+        
+        setTimeout(() => {
+            let isApproved = false;
+            let paymentMethod = '';
+            
+            if (selectedPayment === 'pix') {
+                isApproved = true;
+                paymentMethod = 'PIX';
+            } else if (selectedPayment === 'card') {
+                isApproved = Math.random() < 0.8;
+                paymentMethod = 'Cartão de Crédito';
+            } else if (selectedPayment === 'boleto') {
+                isApproved = Math.random() < 0.7;
+                paymentMethod = 'Boleto';
+            }
+            
+            if (isApproved) {
+                addNotification(`✅ Pagamento APROVADO! (${paymentMethod})`, 'success');
+                isPaymentProcessed = true;
+                flowResult = 'success';
+                currentStep = 'gateway';
+                updateBPMNVisual();
+                
+                setTimeout(() => {
+                    if (currentStep === 'gateway') {
+                        addNotification('🔷 Gateway: Pagamento aprovado - seguindo para confirmação', 'success');
+                        currentStep = 'confirm';
+                        updateBPMNVisual();
+                        
+                        setTimeout(() => {
+                            if (currentStep === 'confirm') {
+                                addNotification('✓ Confirmando pedido...', 'success');
+                                currentStep = 'end_success';
+                                updateBPMNVisual();
+                                isFlowActive = false;
+                                showModal('🎉 Pedido Confirmado!', 
+                                    `Seu pedido foi concluído com sucesso!\n\n` +
+                                    `Produtos: ${cart.map(p => p.name).join(', ')}\n` +
+                                    `Total: R$ ${cart.reduce((t, p) => t + p.price, 0).toFixed(2)}\n` +
+                                    `Pagamento: ${paymentMethod}\n\n` +
+                                    `Fluxo BPMN finalizado com SUCESSO!`);
+                            }
+                        }, 800);
+                    }
+                }, 500);
+            } else {
+                addNotification(`❌ Pagamento RECUSADO! (${paymentMethod})`, 'error');
+                isPaymentProcessed = true;
+                flowResult = 'fail';
+                currentStep = 'gateway';
+                updateBPMNVisual();
+                
+                setTimeout(() => {
+                    if (currentStep === 'gateway') {
+                        addNotification('🔷 Gateway: Pagamento recusado - seguindo para notificação de falha', 'error');
+                        currentStep = 'notify';
+                        updateBPMNVisual();
+                        
+                        setTimeout(() => {
+                            if (currentStep === 'notify') {
+                                addNotification('📧 Notificando cliente sobre falha no pagamento...', 'info');
+                                currentStep = 'end_fail';
+                                updateBPMNVisual();
+                                isFlowActive = false;
+                                showModal('❌ Pagamento Recusado', 
+                                    `Infelizmente seu pagamento não foi aprovado.\n\n` +
+                                    `Forma de pagamento: ${paymentMethod}\n` +
+                                    `Valor: R$ ${cart.reduce((t, p) => t + p.price, 0).toFixed(2)}\n\n` +
+                                    `O pedido foi CANCELADO.\n` +
+                                    `Clique em "Reiniciar Fluxo BPMN" para tentar novamente.`);
+                            }
+                        }, 800);
+                    }
+                }, 500);
+            }
+        }, 1500);
+    }
+    
+    function addNotification(message, type) {
+        const container = document.createElement('div');
+        container.className = `notification ${type === 'error' ? 'error' : ''}`;
+        container.innerHTML = message;
+        document.body.appendChild(container);
+        setTimeout(() => container.remove(), 3500);
+    }
+    
+    function showModal(title, message) {
+        document.getElementById('modalTitle').innerHTML = title;
+        document.getElementById('modalMessage').innerHTML = message;
+        document.getElementById('resultModal').classList.add('show');
+    }
+    
+    function closeModal() {
+        document.getElementById('resultModal').classList.remove('show');
+    }
+    
+    function init() {
+        document.querySelectorAll('.product-card').forEach(card => {
+            card.addEventListener('click', () => {
+                const product = {
+                    id: parseInt(card.dataset.id),
+                    name: card.dataset.name,
+                    price: parseFloat(card.dataset.price)
+                };
+                addToCart(product);
+            });
+        });
+        
+        document.querySelectorAll('.payment-option').forEach(opt => {
+            opt.addEventListener('click', () => {
+                if (!isFlowActive && (currentStep === 'end_success' || currentStep === 'end_fail')) {
+                    addNotification('⚠️ Fluxo finalizado. Reinicie para continuar.', 'warning');
+                    return;
+                }
+                document.querySelectorAll('.payment-option').forEach(o => o.classList.remove('selected'));
+                opt.classList.add('selected');
+                selectedPayment = opt.dataset.payment;
+                
+                if (cart.length > 0 && (currentStep === 'select' || currentStep === 'message' || currentStep === 'process') && !isPaymentProcessed) {
+                    document.getElementById('processPaymentBtn').disabled = false;
+                }
+            });
+        });
+        
+        document.getElementById('processPaymentBtn').addEventListener('click', processPayment);
+        document.getElementById('resetFlowBtn').addEventListener('click', resetFlow);
+        
+        updateBPMNVisual();
+        addNotification('🚀 BPMN Iniciado! Selecione um produto para começar o fluxo.', 'success');
+    }
+    
+    window.removeFromCart = removeFromCart;
+    window.closeModal = closeModal;
+    
+    init();
+</script>
+</body>
+</html>

@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>🏆 BPMN Quiz - Análise de Sistemas | Loja de Prêmios</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #0f3460, #16213e);
+            border-radius: 20px;
+            padding: 20px 30px;
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            border-bottom: 3px solid #e94560;
+        }
+
+        .logo h1 {
+            color: white;
+            font-size: 1.4rem;
+        }
+
+        .logo p {
+            color: #ccc;
+            font-size: 0.8rem;
+        }
+
+        .reward-display {
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            padding: 10px 20px;
+            display: flex;
+            gap: 20px;
+        }
+
+        .reward-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: white;
+        }
+
+        .reward-value {
+            font-weight: bold;
+            font-size: 1.3rem;
+        }
+
+        .coin { color: #ffd700; }
+        .trophy { color: #ff9800; }
+        .star { color: #06d6a0; }
+
+        /* Grid principal */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 25px;
+        }
+
+        @media (max-width: 900px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Questões */
+        .questions-container {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+        }
+
+        .section-title {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            color: #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .progress-badge {
+            background: #667eea;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+
+        .question-card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+            transition: all 0.3s;
+        }
+
+        .question-card.answered-correct {
+            background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+            border-left: 5px solid #4caf50;
+        }
+
+        .question-card.answered-wrong {
+            background: linear-gradient(135deg, #ffebee, #ffcdd2);
+            border-left: 5px solid #f44336;
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .question-number {
+            background: #667eea;
+            color: white;
+            padding: 3px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+
+        .question-points {
+            background: #ffd700;
+            color: #333;
+            padding: 3px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .question-text {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+            line-height: 1.4;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .option {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 15px;
+            background: white;
+            border-radius: 10px;
+            cursor: pointer;
+            border: 1px solid #ddd;
+            transition: all 0.2s;
+        }
+
+        .option:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+
+        .option input {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .option label {
+            flex: 1;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .feedback {
+            font-size: 0.8rem;
+            padding: 10px;
+            border-radius: 8px;
+            display: none;
+            margin-top: 10px;
+        }
+
+        .feedback.show {
+            display: block;
+        }
+
+        .feedback.correct {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .feedback.wrong {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        /* Loja de Prêmios */
+        .shop-container {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            position: sticky;
+            top: 20px;
+            height: fit-content;
+        }
+
+        .shop-title {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            color: #333;
+            text-align: center;
+        }
+
+        .prize-card {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: all 0.3s;
+        }
+
+        .prize-card.locked {
+            opacity: 0.5;
+        }
+
+        .prize-card.unlocked {
+            background: linear-gradient(135deg, #e8f5e9, #c8e6c9);
+            border: 2px solid #4caf50;
+        }
+
+        .prize-icon {
+            font-size: 2rem;
+        }
+
+        .prize-info {
+            flex: 1;
+        }
+
+        .prize-name {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .prize-cost {
+            font-size: 0.8rem;
+            color: #ffd700;
+            font-weight: bold;
+        }
+
+        .prize-description {
+            font-size: 0.7rem;
+            color: #666;
+        }
+
+        .buy-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .buy-btn:hover:not(:disabled) {
+            transform: scale(1.05);
+        }
+
+        .buy-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Ações */
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .btn-success {
+            background: #06d6a0;
+            color: #1a1a2e;
+        }
+
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            visibility: hidden;
+            opacity: 0;
+            transition: all 0.3s;
+        }
+
+        .modal.show {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #1a1a2e;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 12px;
+            border-left: 4px solid #06d6a0;
+            z-index: 1000;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        footer {
+            text-align: center;
+            color: #888;
+            font-size: 0.75rem;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <div class="logo">
+            <h1>🏆 BPMN Quiz - Análise e Projeto de Sistemas</h1>
+            <p>Responda as questões, ganhe moedas e resgate prêmios!</p>
+        </div>
+        <div class="reward-display">
+            <div class="reward-item">
+                <span class="reward-value coin" id="coinDisplay">0</span>
+                <span>🪙 Moedas</span>
+            </div>
+            <div class="reward-item">
+                <span class="reward-value trophy" id="trophyDisplay">0</span>
+                <span>🏆 Troféus</span>
+            </div>
+            <div class="reward-item">
+                <span class="reward-value star" id="starDisplay">0</span>
+                <span>⭐ Estrelas</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-grid">
+        <!-- Questões -->
+        <div class="questions-container">
+            <div class="section-title">
+                <span>📋 20 Questões Objetivas</span>
+                <span class="progress-badge" id="progressBadge">0/20 respondidas</span>
+            </div>
+            <div id="questionsList"></div>
+            <div class="action-buttons">
+                <button class="btn btn-primary" id="checkAllBtn">✅ Verificar todas as respostas</button>
+                <button class="btn btn-secondary" id="resetBtn">🔄 Reiniciar</button>
+                <button class="btn btn-success" id="collectRewardsBtn">🎁 Coletar recompensas</button>
+            </div>
+        </div>
+
+        <!-- Loja de Prêmios -->
+        <div class="shop-container">
+            <div class="shop-title">🏪 LOJA DE PRÊMIOS</div>
+            <div id="prizesList"></div>
+            <div style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 15px;">
+                <h4>🎯 Progresso</h4>
+                <div style="background: #e0e0e0; border-radius: 10px; height: 20px; margin-top: 10px;">
+                    <div id="progressBarFill" style="background: linear-gradient(90deg, #06d6a0, #667eea); width: 0%; height: 100%; border-radius: 10px; transition: width 0.5s;"></div>
+                </div>
+                <p style="font-size: 0.8rem; margin-top: 10px; text-align: center;" id="progressPercent">0% completo</p>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>🏆 Cada acerto vale 10 moedas | 100 moedas = 1 troféu | 5 troféus = 1 estrela | Desbloqueie prêmios especiais!</p>
+    </footer>
+</div>
+
+<div id="resultModal" class="modal">
+    <div class="modal-content">
+        <h2 id="modalTitle"></h2>
+        <p id="modalMessage"></p>
+        <button class="btn btn-primary" onclick="closeModal()">Fechar</button>
+    </div>
+</div>
+
+<script>
+    // Banco de questões (20 questões sobre BPMN, Análise e Projeto de Sistemas)
+    const questions = [
+        { text: "O que significa BPMN?", options: ["Business Process Model Notation", "Business Process Management Notation", "Basic Process Model Notation", "Business Product Model Notation"], correct: 0, points: 10, feedback: "BPMN = Business Process Model and Notation - Padrão para modelagem de processos de negócio." },
+        { text: "No BPMN, o que representa um círculo fino?", options: ["Tarefa", "Evento", "Gateway", "Fluxo"], correct: 1, points: 10, feedback: "Círculo fino representa EVENTOS (início, fim, intermediários) no BPMN." },
+        { text: "Qual elemento BPMN representa uma decisão (SIM/NÃO)?", options: ["Evento", "Tarefa", "Gateway", "Pool"], correct: 2, points: 10, feedback: "GATEWAY é usado para decisões, splits e joins no fluxo do processo." },
+        { text: "O que é um Pool no BPMN?", options: ["Um participante/grupo principal", "Um subprocesso", "Uma tarefa específica", "Um evento de tempo"], correct: 0, points: 10, feedback: "POOL representa um participante principal no processo (ex: uma empresa)." },
+        { text: "Lanes (raias) no BPMN servem para:", options: ["Dividir tarefas em grupos", "Separar responsabilidades dentro do pool", "Mostrar eventos paralelos", "Indicar gateways exclusivos"], correct: 1, points: 10, feedback: "LANES dividem o pool em áreas de responsabilidade (ex: Cliente, Sistema)." },
+        { text: "Qual tipo de gateway permite apenas UM caminho?", options: ["Paralelo", "Inclusivo", "Exclusivo (XOR)", "Complexo"], correct: 2, points: 10, feedback: "Gateway EXCLUSIVO (XOR) escolhe APENAS UM dos caminhos possíveis." },
+        { text: "Na análise de sistemas, requisitos FUNCIONAIS descrevem:", options: ["O QUE o sistema deve fazer", "COMO o sistema deve ser rápido", "A segurança do sistema", "O design da interface"], correct: 0, points: 10, feedback: "Requisitos FUNCIONAIS descrevem as funcionalidades/especificações do sistema." },
+        { text: "Requisitos NÃO FUNCIONAIS estão relacionados a:", options: ["Telas e botões", "Atributos de qualidade (desempenho, segurança)", "Regras de negócio", "Cálculos financeiros"], correct: 1, points: 10, feedback: "Requisitos NÃO FUNCIONAIS: desempenho, segurança, usabilidade, disponibilidade." },
+        { text: "Qual etapa do CVDS vem depois da análise?", options: ["Implementação", "Testes", "Projeto", "Implantação"], correct: 2, points: 10, feedback: "Ciclo: Levantamento → Análise → PROJETO → Implementação → Testes → Implantação." },
+        { text: "O que é um Evento de Mensagem no BPMN?", options: ["Comunicação entre processos", "Fim do processo", "Início do processo", "Decisão do sistema"], correct: 0, points: 10, feedback: "Evento de MENSAGEM representa comunicação/envio de dados entre participantes." },
+        { text: "No modelo Cascata, as fases são:", options: ["Iterativas e flexíveis", "Sequenciais e rígidas", "Paralelas e independentes", "Aleatórias"], correct: 1, points: 10, feedback: "Cascata é SEQUENCIAL: cada fase começa após a anterior terminar." },
+        { text: "Qual metodologia é considerada ÁGIL?", options: ["Cascata", "Scrum", "Espiral", "V-Model"], correct: 1, points: 10, feedback: "Scrum, Kanban e XP são metodologias ÁGEIS, com entregas incrementais." },
+        { text: "No BPMN, retângulo com borda arredondada representa:", options: ["Evento", "Gateway", "Tarefa/Atividade", "Pool"], correct: 2, points: 10, feedback: "Retângulo arredondado = TAREFA/ATIVIDADE (trabalho executado no processo)." },
+        { text: "Seta no BPMN representa:", options: ["Evento", "Fluxo de sequência", "Gateway", "Pool"], correct: 1, points: 10, feedback: "Seta representa FLUXO DE SEQUÊNCIA - ordem das atividades no processo." },
+        { text: "Qual documento formaliza os requisitos do sistema?", options: ["Código fonte", "EAP", "Documento de requisitos", "Backlog do produto"], correct: 2, points: 10, feedback: "Documento de REQUISITOS formaliza necessidades e especificações do sistema." },
+        { text: "O que é um MVP (Mínimo Produto Viável)?", options: ["Versão completa do sistema", "Versão com funções essenciais para teste", "Documentação do projeto", "Manual do usuário"], correct: 1, points: 10, feedback: "MVP = versão com funcionalidades básicas para validar ideia com usuários." },
+        { text: "No gateway exclusivo, quantos caminhos são seguidos?", options: ["Todos", "Nenhum", "Apenas um", "Dois ou mais"], correct: 2, points: 10, feedback: "Gateway EXCLUSIVO (XOR) segue APENAS UM caminho com base em condição." },
+        { text: "Qual evento NÃO existe no BPMN?", options: ["Início", "Intermediário", "Término", "Condicional"], correct: 3, points: 10, feedback: "Eventos BPMN: Início, Intermediário, Fim. 'Condicional' não é um evento padrão." },
+        { text: "O que é um protótipo em análise de sistemas?", options: ["Sistema final", "Versão preliminar para validação", "Documento de requisitos", "Contrato com cliente"], correct: 1, points: 10, feedback: "PROTÓTIPO é versão preliminar para validar requisitos com usuários." },
+        { text: "Na terceirização (outsourcing), o que é terceirizado?", options: ["Apenas o suporte", "Apenas os testes", "O desenvolvimento do sistema", "Apenas a documentação"], correct: 2, points: 10, feedback: "OUTSOURCING = terceirizar o desenvolvimento do sistema para outra empresa." }
+    ];
+
+    // Estado do usuário
+    let userAnswers = new Array(20).fill(null);
+    let questionStatus = new Array(20).fill(null); // 'correct', 'wrong', null
+    let coins = 0;
+    let trophies = 0;
+    let stars = 0;
+    
+    // Prêmios disponíveis
+    const prizes = [
+        { id: 1, name: "🎓 Certificado Básico", icon: "📜", cost: 50, description: "Certificado de conclusão básico", unlocked: false, reward: "cert_basic" },
+        { id: 2, name: "🏅 Medalha BPMN", icon: "🏅", cost: 100, description: "Especialista em notações BPMN", unlocked: false, reward: "medal_bpmn" },
+        { id: 3, name: "📘 E-book Análise", icon: "📘", cost: 150, description: "Guia prático de análise", unlocked: false, reward: "ebook" },
+        { id: 4, name: "🏆 Troféu Expert", icon: "🏆", cost: 300, description: "Certificado Expert em Sistemas", unlocked: false, reward: "trophy_expert" },
+        { id: 5, name: "⭐ Estrela Diamante", icon: "⭐", cost: 500, description: "Conquista máxima - Mestre Analista", unlocked: false, reward: "diamond_star" }
+    ];
+
+    function renderQuestions() {
+        const container = document.getElementById('questionsList');
+        container.innerHTML = '';
+        
+        questions.forEach((q, idx) => {
+            const card = document.createElement('div');
+            card.className = `question-card ${questionStatus[idx] === 'correct' ? 'answered-correct' : ''} ${questionStatus[idx] === 'wrong' ? 'answered-wrong' : ''}`;
+            
+            card.innerHTML = `
+                <div class="question-header">
+                    <span class="question-number">Questão ${idx + 1}</span>
+                    <span class="question-points">💰 ${q.points} moedas</span>
+                </div>
+                <div class="question-text">${q.text}</div>
+                <div class="options" id="options-${idx}">
+                    ${q.options.map((opt, optIdx) => `
+                        <div class="option" onclick="selectOption(${idx}, ${optIdx})">
+                            <input type="radio" name="q${idx}" value="${optIdx}" ${userAnswers[idx] === optIdx ? 'checked' : ''}>
+                            <label>${String.fromCharCode(65 + optIdx)}. ${opt}</label>
+                        </div>
+                    `).join('')}
+                </div>
+                <div class="feedback" id="feedback-${idx}">
+                    <strong>💡 Explicação:</strong> ${q.feedback}
+                </div>
+            `;
+            container.appendChild(card);
+        });
+    }
+
+    function selectOption(qIndex, optIndex) {
+        userAnswers[qIndex] = optIndex;
+        questionStatus[qIndex] = null;
+        
+        // Resetar visual
+        const card = document.querySelectorAll('.question-card')[qIndex];
+        if (card) {
+            card.classList.remove('answered-correct', 'answered-wrong');
+        }
+        const feedback = document.getElementById(`feedback-${qIndex}`);
+        if (feedback) feedback.classList.remove('show');
+        
+        updateProgress();
+    }
+
+    function checkAllQuestions() {
+        let newCoinsEarned = 0;
+        let newlyCorrect = 0;
+        
+        for (let i = 0; i < questions.length; i++) {
+            if (userAnswers[i] !== null && questionStatus[i] === null) {
+                const isCorrect = (userAnswers[i] === questions[i].correct);
+                questionStatus[i] = isCorrect ? 'correct' : 'wrong';
+                
+                if (isCorrect) {
+                    newCoinsEarned += questions[i].points;
+                    newlyCorrect++;
+                }
+                
+                // Atualizar visual
+                const card = document.querySelectorAll('.question-card')[i];
+                if (card) {
+                    card.classList.add(isCorrect ? 'answered-correct' : 'answered-wrong');
+                    card.classList.remove(isCorrect ? 'answered-wrong' : 'answered-correct');
+                }
+                
+                const feedback = document.getElementById(`feedback-${i}`);
+                if (feedback) {
+                    feedback.classList.add('show');
+                    feedback.classList.add(isCorrect ? 'correct' : 'wrong');
+                }
+            }
+        }
+        
+        if (newCoinsEarned > 0) {
+            coins += newCoinsEarned;
+            updateRewards();
+            addNotification(`🎉 Você ganhou ${newCoinsEarned} moedas! ${newlyCorrect} novas respostas corretas!`, 'success');
+        } else if (newlyCorrect === 0 && userAnswers.filter(a => a !== null).length > 0) {
+            addNotification(`⚠️ Você já havia verificado estas questões. Tente responder as pendentes.`, 'info');
+        }
+        
+        updateTrophiesAndStars();
+        updateProgress();
+        updateRewardsDisplay();
+    }
+
+    function updateTrophiesAndStars() {
+        const oldTrophies = trophies;
+        const oldStars = stars;
+        
+        trophies = Math.floor(coins / 100);
+        stars = Math.floor(trophies / 5);
+        
+        if (trophies > oldTrophies) {
+            addNotification(`🏆 Parabéns! Você ganhou ${trophies - oldTrophies} troféu(s)!`, 'success');
+        }
+        if (stars > oldStars) {
+            addNotification(`⭐ INCRÍVEL! Você ganhou ${stars - oldStars} estrela(s) de diamante!`, 'success');
+        }
+        
+        updateRewardsDisplay();
+    }
+
+    function updateRewards() {
+        updateRewardsDisplay();
+        updateTrophiesAndStars();
+        updatePrizesAvailability();
+    }
+
+    function updateRewardsDisplay() {
+        document.getElementById('coinDisplay').textContent = coins;
+        document.getElementById('trophyDisplay').textContent = trophies;
+        document.getElementById('starDisplay').textContent = stars;
+        
+        // Salvar no localStorage
+        localStorage.setItem('bpmn_quiz_coins', coins);
+        localStorage.setItem('bpmn_quiz_trophies', trophies);
+        localStorage.setItem('bpmn_quiz_stars', stars);
+        localStorage.setItem('bpmn_quiz_answers', JSON.stringify(userAnswers));
+        localStorage.setItem('bpmn_quiz_status', JSON.stringify(questionStatus));
+    }
+
+    function updatePrizesAvailability() {
+        const savedPrizes = localStorage.getItem('bpmn_quiz_prizes');
+        let unlockedPrizes = savedPrizes ? JSON.parse(savedPrizes) : [];
+        
+        prizes.forEach(prize => {
+            prize.unlocked = unlockedPrizes.includes(prize.id);
+        });
+        
+        renderPrizes();
+    }
+
+    function renderPrizes() {
+        const container = document.getElementById('prizesList');
+        container.innerHTML = '';
+        
+        prizes.forEach(prize => {
+            const card = document.createElement('div');
+            card.className = `prize-card ${prize.unlocked ? 'unlocked' : 'locked'}`;
+            
+            card.innerHTML = `
+                <div class="prize-icon">${prize.icon}</div>
+                <div class="prize-info">
+                    <div class="prize-name">${prize.name}</div>
+                    <div class="prize-cost">💰 ${prize.cost} moedas</div>
+                    <div class="prize-description">${prize.description}</div>
+                </div>
+                <button class="buy-btn" ${prize.unlocked || coins < prize.cost ? 'disabled' : ''} onclick="buyPrize(${prize.id}, ${prize.cost}, '${prize.name}')">
+                    ${prize.unlocked ? '✓ Resgatado' : 'Resgatar'}
+                </button>
+            `;
+            container.appendChild(card);
+        });
+    }
+
+    function buyPrize(prizeId, cost, prizeName) {
+        if (coins >= cost) {
+            coins -= cost;
+            updateRewards();
+            
+            const savedPrizes = localStorage.getItem('bpmn_quiz_prizes');
+            let unlockedPrizes = savedPrizes ? JSON.parse(savedPrizes) : [];
+            if (!unlockedPrizes.includes(prizeId)) {
+                unlockedPrizes.push(prizeId);
+                localStorage.setItem('bpmn_quiz_prizes', JSON.stringify(unlockedPrizes));
+            }
+            
+            updatePrizesAvailability();
+            addNotification(`🎁 Parabéns! Você resgatou ${prizeName}!`, 'success');
+            showModal('🎉 Prêmio Resgatado!', `Você resgatou ${prizeName} com sucesso!\nContinue acumulando moedas para mais prêmios!`);
+        }
+    }
+
+    function updateProgress() {
+        const answered = userAnswers.filter(a => a !== null).length;
+        const correct = questionStatus.filter(s => s === 'correct').length;
+        
+        document.getElementById('progressBadge').textContent = `${answered}/20 respondidas`;
+        const percent = (correct / 20) * 100;
+        document.getElementById('progressBarFill').style.width = `${percent}%`;
+        document.getElementById('progressPercent').textContent = `${Math.round(percent)}% completo (${correct} acertos)`;
+        
+        // Salvar progresso
+        localStorage.setItem('bpmn_quiz_answers', JSON.stringify(userAnswers));
+        localStorage.setItem('bpmn_quiz_status', JSON.stringify(questionStatus));
+    }
+
+    function resetQuiz() {
+        userAnswers = new Array(20).fill(null);
+        questionStatus = new Array(20).fill(null);
+        
+        // Reset sem perder moedas
+        renderQuestions();
+        updateProgress();
+        addNotification('🔄 Respostas limpas! Responda novamente para ganhar mais moedas.', 'info');
+    }
+
+    function collectRewards() {
+        const correct = questionStatus.filter(s => s === 'correct').length;
+        const totalPossible = questions.reduce((sum, q) => sum + q.points, 0);
+        const earned = coins;
+        
+        showModal('🎁 Recompensas Acumuladas', 
+            `📊 SEU DESEMPENHO:\n\n` +
+            `✅ Acertos: ${correct}/20\n` +
+            `💰 Moedas ganhas: ${earned}\n` +
+            `🏆 Troféus: ${trophies}\n` +
+            `⭐ Estrelas: ${stars}\n\n` +
+            `🏪 Visite a loja ao lado para resgatar seus prêmios!\n` +
+            `💡 Dica: Responda todas as questões para maximizar suas moedas!`);
+    }
+
+    function addNotification(message, type) {
+        const container = document.createElement('div');
+        container.className = 'notification';
+        container.innerHTML = message;
+        document.body.appendChild(container);
+        setTimeout(() => container.remove(), 3000);
+    }
+
+    function showModal(title, message) {
+        document.getElementById('modalTitle').innerHTML = title;
+        document.getElementById('modalMessage').innerHTML = message.replace(/\n/g, '<br>');
+        document.getElementById('resultModal').classList.add('show');
+    }
+
+    function closeModal() {
+        document.getElementById('resultModal').classList.remove('show');
+    }
+
+    function loadSavedData() {
+        const savedCoins = localStorage.getItem('bpmn_quiz_coins');
+        const savedTrophies = localStorage.getItem('bpmn_quiz_trophies');
+        const savedStars = localStorage.getItem('bpmn_quiz_stars');
+        const savedAnswers = localStorage.getItem('bpmn_quiz_answers');
+        const savedStatus = localStorage.getItem('bpmn_quiz_status');
+        
+        if (savedCoins) coins = parseInt(savedCoins);
+        if (savedTrophies) trophies = parseInt(savedTrophies);
+        if (savedStars) stars = parseInt(savedStars);
+        if (savedAnswers) userAnswers = JSON.parse(savedAnswers);
+        if (savedStatus) questionStatus = JSON.parse(savedStatus);
+        
+        updateRewardsDisplay();
+        renderQuestions();
+        updateProgress();
+    }
+
+    // Tornar funções globais
+    window.selectOption = selectOption;
+    window.buyPrize = buyPrize;
+    window.closeModal = closeModal;
+
+    // Event listeners
+    document.getElementById('checkAllBtn').addEventListener('click', checkAllQuestions);
+    document.getElementById('resetBtn').addEventListener('click', resetQuiz);
+    document.getElementById('collectRewardsBtn').addEventListener('click', collectRewards);
+
+    // Inicializar
+    loadSavedData();
+    updatePrizesAvailability();
+    renderPrizes();
+</script>
+</body>
+</html>

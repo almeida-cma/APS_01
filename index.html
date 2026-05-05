@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>APS_01 - Análise e Projeto em Sistemas</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .header h1 {
+            color: #333;
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+
+        .header h1 span {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .badge {
+            display: inline-block;
+            background: #e94560;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin-top: 15px;
+        }
+
+        .links-panel {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+            display: inline-block;
+        }
+
+        .links-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .link-card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: all 0.3s;
+            border: 1px solid #e0e0e0;
+            text-decoration: none;
+            color: #333;
+        }
+
+        .link-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            border-color: #667eea;
+        }
+
+        .link-number {
+            background: #667eea;
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+
+        .link-icon {
+            font-size: 1.8rem;
+            min-width: 45px;
+            text-align: center;
+        }
+
+        .link-content {
+            flex: 1;
+        }
+
+        .link-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .link-description {
+            font-size: 0.75rem;
+            color: #888;
+        }
+
+        .link-badge {
+            font-size: 0.7rem;
+            background: #667eea;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+        }
+
+        .activity-section {
+            background: linear-gradient(135deg, #f5f7fa, #e9ecef);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .activity-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .activity-list {
+            list-style: none;
+            padding-left: 20px;
+        }
+
+        .activity-list li {
+            margin: 12px 0;
+            color: #555;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .activity-list li::before {
+            content: "📌";
+            margin-right: 5px;
+        }
+
+        .activity-number {
+            background: #e94560;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .footer {
+            background: #1a1a2e;
+            border-radius: 20px;
+            padding: 25px;
+            color: white;
+        }
+
+        .footer h4 {
+            margin-bottom: 15px;
+            font-size: 1rem;
+        }
+
+        .footer-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .footer-link {
+            color: #ccc;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: color 0.3s;
+        }
+
+        .footer-link:hover {
+            color: #06d6a0;
+        }
+
+        .survey-box {
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            padding: 15px;
+            margin-top: 15px;
+            border-left: 4px solid #ffd700;
+        }
+
+        .survey-box p {
+            font-size: 0.85rem;
+            margin-bottom: 10px;
+        }
+
+        .survey-link {
+            background: #ffd700;
+            color: #1a1a2e;
+            padding: 8px 15px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-block;
+            transition: all 0.3s;
+        }
+
+        .survey-link:hover {
+            background: #ffc107;
+            transform: scale(1.02);
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 20px;
+            margin-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            font-size: 0.7rem;
+            color: #888;
+        }
+
+        @media (max-width: 600px) {
+            .header h1 {
+                font-size: 1.3rem;
+            }
+            .links-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📚 <span>APS_01</span> - Análise e Projeto em Sistemas</h1>
+            <p>Material de apoio, atividades e recursos para aprendizado</p>
+            <div class="badge">🎯 Atividade Prática Semanal 01</div>
+        </div>
+
+        <div class="links-panel">
+            <h2 class="section-title">📖 AULA - APS_01</h2>
+            <div class="links-grid">
+                <!-- 1 -->
+                <a href="An_lise_e_Projeto_em_Sistemas.html" target="_blank" class="link-card">
+                    <div class="link-number">1</div>
+                    <div class="link-content">
+                        <div class="link-title">Análise e Projeto em Sistemas</div>
+                        <div class="link-description">Conceitos fundamentais e metodologias</div>
+                    </div>
+                    <div class="link-badge">Abrir</div>
+                </a>
+
+                <!-- 2 -->
+                <a href="https://ahaslides.com/ZBEF8" target="_blank" class="link-card">
+                    <div class="link-number">2</div>
+                    <div class="link-content">
+                        <div class="link-title">Atividade de apoio</div>
+                        <div class="link-description">AhaSlides - Interação em tempo real</div>
+                    </div>
+                    <div class="link-badge">Abrir</div>
+                </a>
+
+                <!-- 3 -->
+                <a href="tema1.html" target="_blank" class="link-card">
+                    <div class="link-number">3</div>
+                    <div class="link-content">
+                        <div class="link-title">Introdução à Análise de Sistemas</div>
+                        <div class="link-description">Tema 01 - Habilidades e fundamentos</div>
+                    </div>
+                    <div class="link-badge">Abrir</div>
+                </a>
+
+                <!-- 4 -->
+                <a href="p_Greenfield_Log.html" target="_blank" class="link-card">
+                    <div class="link-number">4</div>
+                    <div class="link-content">
+                        <div class="link-title">Caso - Greenfield Logística S.A.</div>
+                        <div class="link-description">Estudo de caso completo</div>
+                    </div>
+                    <div class="link-badge">Abrir</div>
+                </a>
+
+                <!-- 5 -->
+                <a href="teste_Greenfield_Log.html" target="_blank" class="link-card">
+                    <div class="link-number">5</div>
+                    <div class="link-content">
+                        <div class="link-title">Testes do protótipo Greenfield</div>
+                        <div class="link-description">Avaliação e validação do protótipo</div>
+                    </div>
+                    <div class="link-badge">Abrir</div>
+                </a>
+
+                <!-- 6 -->
+                <a href="BPMN_Loja.png" target="_blank" class="link-card">
+                    <div class="link-number">6</div>
+                    <div class="link-content">
+                        <div class="link-title">Notação BPMN</div>
+                        <div class="link-description">Diagrama BPMN - Loja online (PNG)</div>
+                    </div>
+                    <div class="link-badge">Abrir</div>
+                </a>
+
+                <!-- 7 -->
+                <a href="https://bpmn.io/" target="_blank" class="link-card">
+                    <div class="link-number">7</div>
+                    <div class="link-content">
+                        <div class="link-title">Ferramenta BPMN</div>
+                        <div class="link-description">bpmn.io - Modelagem online gratuita</div>
+                    </div>
+                    <div class="link-badge">Abrir</div>
+                </a>
+
+                <!-- 8 -->
+                <a href="p_loja_online.html" target="_blank" class="link-card">
+                    <div class="link-number">8</div>
+                    <div class="link-content">
+                        <div class="link-title">Caso - Loja online</div>
+                        <div class="link-description">Estudo de caso com BPMN</div>
+                    </div>
+                    <div class="link-badge">Abrir</div>
+                </a>
+
+                <!-- 9 -->
+                <a href="teste_loja_online.html" target="_blank" class="link-card">
+                    <div class="link-number">9</div>
+                    <div class="link-content">
+                        <div class="link-title">Testes do protótipo Loja online</div>
+                        <div class="link-description">Questionário de validação</div>
+                    </div>
+                    <div class="link-badge">Abrir</div>
+                </a>
+            </div>
+
+            <div class="activity-section">
+                <div class="activity-title">
+                    <span>📋</span> ATIVIDADE 10 - Criar repositório "APS_01"
+                </div>
+                <ul class="activity-list">
+                    <li>
+                        <span class="activity-number">5</span>
+                        Capturar resultado da <strong>atividade 5</strong> (Testes Greenfield Logística)
+                    </li>
+                    <li>
+                        <span class="activity-number">7</span>
+                        Capturar resultado da <strong>atividade 7</strong> (Ferramenta BPMN)
+                    </li>
+                    <li>
+                        <span class="activity-number">9</span>
+                        Capturar resultado da <strong>atividade 9</strong> (Testes Loja online)
+                    </li>
+                    <li>
+                        <span class="activity-number">📁</span>
+                        Adicionar capturas ao repositório GitHub <strong>"APS_01"</strong>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer">
+            <h4>🔗 Links Úteis</h4>
+            <div class="footer-links">
+                <a href="https://bpmn.io/" target="_blank" class="footer-link">
+                    <span>🔄</span> BPMN.io - Modelagem BPMN
+                </a>
+                <a href="https://forms.gle/T9QSe3PyEpru3t538" target="_blank" class="footer-link">
+                    <span>📤</span> Enviar atividades
+                </a>
+                <a href="https://forms.gle/QvYjXnrAenbMSyTR8" target="_blank" class="footer-link">
+                    <span>🆘</span> Solicitar suporte
+                </a>
+            </div>
+
+            <div class="survey-box">
+                <p>📢 <strong>Pesquisa de Satisfação - Fundamentos de Programação</strong></p>
+                <p>Sua opinião é muito importante para melhorarmos continuamente nossas disciplinas!</p>
+                <a href="https://forms.gle/3UhazS8K7Wt3y1Bo6" target="_blank" class="survey-link">
+                    ⭐ Responder Pesquisa de Satisfação
+                </a>
+            </div>
+
+            <div class="copyright">
+                <p>© 2024 - APS_01 | Análise e Projeto em Sistemas | Todos os links abrem em nova aba</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.querySelectorAll('a').forEach(link => {
+            if (!link.getAttribute('target')) {
+                link.setAttribute('target', '_blank');
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1096 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tutor Moderno - Análise de Sistemas | Greenfield Logística</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .app-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            background: white;
+            border-radius: 20px;
+            padding: 25px 35px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .header h1 {
+            color: #333;
+            font-size: 1.5rem;
+        }
+
+        .badge {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-weight: 600;
+        }
+
+        /* Cards */
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.12);
+        }
+
+        h2 {
+            color: #333;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #667eea;
+            display: inline-block;
+        }
+
+        h3 {
+            color: #667eea;
+            margin: 15px 0 10px 0;
+        }
+
+        /* Case Study */
+        .case-study {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-left: 5px solid #667eea;
+        }
+
+        .case-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+            margin-top: 20px;
+        }
+
+        .problem-box, .solution-box {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .problem-box h3, .solution-box h3 {
+            margin-bottom: 15px;
+        }
+
+        .problem-box ul, .solution-box ul {
+            margin-left: 20px;
+            line-height: 1.8;
+        }
+
+        /* Accordion */
+        .accordion-item {
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            overflow: hidden;
+        }
+
+        .accordion-header {
+            background: #f8f9fa;
+            padding: 18px 25px;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.3s;
+        }
+
+        .accordion-header:hover {
+            background: #e9ecef;
+        }
+
+        .accordion-header::after {
+            content: '▼';
+            font-size: 0.8rem;
+            transition: transform 0.3s;
+        }
+
+        .accordion-item.active .accordion-header::after {
+            transform: rotate(180deg);
+        }
+
+        .accordion-body {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-out;
+            padding: 0 25px;
+            background: white;
+        }
+
+        .accordion-item.active .accordion-body {
+            max-height: 1000px;
+            padding: 20px 25px;
+        }
+
+        /* Flashcards */
+        .flashcard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .flashcard {
+            height: 160px;
+            perspective: 1000px;
+            cursor: pointer;
+        }
+
+        .flipper {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+            border-radius: 15px;
+        }
+
+        .flashcard.flipped .flipper {
+            transform: rotateY(180deg);
+        }
+
+        .front, .back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 15px;
+            font-size: 0.9rem;
+        }
+
+        .front {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            font-weight: bold;
+        }
+
+        .back {
+            background: #2c3e50;
+            color: white;
+            transform: rotateY(180deg);
+        }
+
+        /* Tabela */
+        .cvs-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+
+        .cvs-table th, .cvs-table td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        .cvs-table th {
+            background: #667eea;
+            color: white;
+        }
+
+        .cvs-table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            margin: 20px 0;
+        }
+
+        .progress-bar {
+            background: #e0e0e0;
+            border-radius: 10px;
+            height: 35px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #06d6a0, #06d6a0);
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .objectives-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin: 20px 0;
+        }
+
+        .objective-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 12px 15px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .objective-item:hover {
+            background: #e9ecef;
+        }
+
+        .objective-item input {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 12px 25px;
+            background: #f0f0f0;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.4s;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Quiz */
+        .quiz-question {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #333;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 12px;
+        }
+
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+
+        .quiz-option {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .quiz-option:hover {
+            background: #e9ecef;
+        }
+
+        .quiz-option input {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            font-family: inherit;
+            resize: vertical;
+            margin: 10px 0;
+            font-size: 14px;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: transform 0.2s, opacity 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+        }
+
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+
+        .feedback {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 10px;
+            font-weight: 500;
+            display: none;
+        }
+
+        .feedback.show {
+            display: block;
+        }
+
+        .feedback.success {
+            background: #d4edda;
+            color: #155724;
+            border-left: 4px solid #28a745;
+        }
+
+        .feedback.warning {
+            background: #fff3cd;
+            color: #856404;
+            border-left: 4px solid #ffc107;
+        }
+
+        .feedback.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border-left: 4px solid #17a2b8;
+        }
+
+        .score-badge {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
+
+        footer {
+            text-align: center;
+            color: white;
+            margin-top: 30px;
+            padding: 20px;
+            opacity: 0.9;
+        }
+
+        @media (max-width: 768px) {
+            .case-grid {
+                grid-template-columns: 1fr;
+            }
+            .flashcard-grid {
+                grid-template-columns: 1fr;
+            }
+            .header {
+                flex-direction: column;
+                text-align: center;
+            }
+            .card {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="app-container">
+    <!-- Header -->
+    <div class="header">
+        <div class="logo">📊 TutorModerno</div>
+        <h1>📋 Análise de Sistemas</h1>
+        <div class="badge">🎯 Greenfield Logística S.A.</div>
+    </div>
+
+    <!-- Identificação -->
+    <div class="card">
+        <h2>📌 Identificação da Temática</h2>
+        <p><strong>Título:</strong> Introdução à Análise de Sistemas - Habilidades, Metodologias e Estudo de Caso</p>
+        <p><strong>Público-alvo:</strong> Iniciantes em TI, Analistas de Sistemas Júnior, Estudantes de Tecnologia</p>
+        <p><strong>Duração estimada:</strong> 90 minutos • <strong>Abordagem:</strong> Aprendizagem baseada em casos reais</p>
+    </div>
+
+    <!-- Estudo de Caso Detalhado -->
+    <div class="card case-study">
+        <h2>🏢 ESTUDO DE CASO: GREENFIELD LOGÍSTICA S.A.</h2>
+        <div class="case-grid">
+            <div class="problem-box">
+                <h3>❌ PROBLEMAS IDENTIFICADOS</h3>
+                <ul>
+                    <li>🚚 <strong>Rastreamento manual:</strong> Motoristas usam planilhas de papel, atualizadas apenas no final do dia</li>
+                    <li>📞 <strong>Atendimento cego:</strong> Central não tem visibilidade em tempo real das entregas</li>
+                    <li>📊 <strong>Gestão ineficiente:</strong> Gerentes recebem relatórios atrasados (D+1)</li>
+                    <li>💰 <strong>Prejuízos operacionais:</strong> 23% de entregas atrasadas, 15% de rotas subotimizadas</li>
+                    <li>😤 <strong>Insatisfação:</strong> Clientes não conseguem rastrear pedidos → 200+ reclamações/mês</li>
+                    <li>📋 <strong>Trabalho braçal:</strong> Motoristas gastam 2h/dia preenchendo formulários físicos</li>
+                </ul>
+            </div>
+            <div class="solution-box">
+                <h3>✅ SOLUÇÃO PROPOSTA (PÓS-ANÁLISE)</h3>
+                <ul>
+                    <li>📍 <strong>Rastreamento GPS:</strong> API Google Maps + dashboard em tempo real</li>
+                    <li>📱 <strong>App Mobile Offline-first:</strong> Para motoristas com roteirização inteligente</li>
+                    <li>📈 <strong>BI Analytics:</strong> Power BI integrado com dados de entrega</li>
+                    <li>🔄 <strong>Metodologia Ágil:</strong> Scrum com sprints de 2 semanas</li>
+                    <li>🎯 <strong>Resultados esperados:</strong> Redução de 60% nos atrasos, satisfação do cliente >90%</li>
+                    <li>🔔 <strong>Notificações automáticas:</strong> Cliente recebe atualizações via WhatsApp/SMS</li>
+                </ul>
+            </div>
+        </div>
+        <div style="margin-top: 20px; padding: 15px; background: rgba(255,255,255,0.7); border-radius: 12px;">
+            <strong>📌 Papel do Analista neste caso:</strong> Coletar requisitos com stakeholders (Carla - Gerente, Ricardo - Motorista, Patrícia - Atendimento), modelar processos atuais, propor soluções tecnológicas alinhadas ao negócio.
+        </div>
+    </div>
+
+    <!-- 1. CONTEÚDO PROGRAMÁTICO -->
+    <div class="card">
+        <h2>1. 📖 Conteúdo Programático</h2>
+        <div class="accordion" id="accordionRoot">
+            <div class="accordion-item">
+                <div class="accordion-header">💡 Definição e Importância da Análise de Sistemas</div>
+                <div class="accordion-body">
+                    <p><strong>Análise de sistemas</strong> é o processo sistemático e estruturado que visa compreender, interpretar e resolver problemas organizacionais por meio de sistemas de informação computadorizados.</p>
+                    <p><strong>Importância:</strong> Sistemas de informação são fundamentais para organizações modernas. A análise de sistemas contribui para otimização de processos, controle de informações, tomada de decisão baseada em dados e adaptação rápida às mudanças.</p>
+                    <p><strong>Exemplo prático (Greenfield):</strong> A análise identificou que o problema central não é técnico (falta de GPS), mas sim de processo (informação não flui em tempo real entre motoristas e central).</p>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <div class="accordion-header">🎯 Papéis e Responsabilidades do Analista de Sistemas</div>
+                <div class="accordion-body">
+                    <ul style="margin-left: 20px; line-height: 1.8;">
+                        <li><strong>Coleta de Requisitos:</strong> Entrevistas, workshops, questionários com stakeholders</li>
+                        <li><strong>Análise e Modelagem:</strong> Mapear processos com BPMN, fluxogramas, DFD</li>
+                        <li><strong>Definição de Requisitos:</strong> Documentar especificações funcionais e não funcionais</li>
+                        <li><strong>Escolha de Tecnologia:</strong> Avaliar soluções prontas vs desenvolvimento customizado</li>
+                        <li><strong>Colaboração com Devs:</strong> Garantir que a implementação atenda aos requisitos</li>
+                        <li><strong>Testes e Validação:</strong> Participar dos testes de aceitação</li>
+                        <li><strong>Treinamento e Suporte:</strong> Capacitar usuários finais</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <div class="accordion-header">🔄 Ciclo de Vida do Desenvolvimento de Sistemas (CVDS)</div>
+                <div class="accordion-body">
+                    <table class="cvs-table">
+                        <thead>
+                            <tr><th>Fase</th><th>Descrição</th><th>No caso Greenfield</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>1. Levantamento</td><td>Coletar necessidades dos stakeholders</td><td>Entrevistas com Carla (Gerente), Ricardo (Motorista), Patrícia (Atendimento)</td></tr>
+                            <tr><td>2. Análise</td><td>Examinar requisitos e processos</td><td>Mapeamento de gargalos: planilhas manuais, falta de integração</td></tr>
+                            <tr><td>3. Projeto</td><td>Definir arquitetura, hardware, software</td><td>App React Native + Node.js + PostgreSQL + API Maps</td></tr>
+                            <tr><td>4. Implementação</td><td>Codificação do sistema</td><td>Desenvolvimento ágil em sprints de 2 semanas</td></tr>
+                            <tr><td>5. Testes</td><td>Validar funcionalidades</td><td>Testes unitários, integração e aceitação com motoristas</td></tr>
+                            <tr><td>6. Implantação</td><td>Colocar em produção</td><td>Treinamento + migração gradual por região</td></tr>
+                            <tr><td>7. Manutenção</td><td>Correções e melhorias</td><td>Sprints contínuas para evolução do sistema</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <div class="accordion-header">⚖️ Metodologias: Cascata vs Ágil vs Híbrido</div>
+                <div class="accordion-body">
+                    <p><strong>📌 Modelo Cascata:</strong> Sequencial, fases rígidas. Vantagem: documentação completa. Desvantagem: mudanças tardias custam caro. Ideal para projetos com requisitos estáveis.</p>
+                    <p><strong>⚡ Metodologias Ágeis (Scrum/Kanban):</strong> Iterativo, entregas incrementais, adaptação contínua. Vantagem: flexibilidade, feedback rápido. Ideal para projetos com requisitos voláteis como Greenfield.</p>
+                    <p><strong>🔄 Abordagem Híbrida:</strong> Parte inicial em cascata (definição de arquitetura) + sprints ágeis (desenvolvimento). Melhor dos dois mundos.</p>
+                    <p><strong>🎯 Para Greenfield:</strong> Optou-se por Scrum com sprints de 2 semanas, permitindo que motoristas testem e deem feedback sobre o app continuamente.</p>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <div class="accordion-header">🎴 Conceitos-Chave (Clique nos cards)</div>
+                <div class="accordion-body">
+                    <div class="flashcard-grid" id="flashcardGrid"></div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <div class="accordion-header">🛠️ Tecnologias e Ferramentas de Apoio</div>
+                <div class="accordion-body">
+                    <ul style="margin-left: 20px; line-height: 1.8;">
+                        <li><strong>Modelagem de Processos:</strong> Bizagi, Lucidchart, BPMN</li>
+                        <li><strong>Gerenciamento de Requisitos:</strong> JIRA, Trello, ClickUp</li>
+                        <li><strong>Prototipagem:</strong> Figma, Adobe XD, Balsamiq</li>
+                        <li><strong>Modelagem UML:</strong> Visual Paradigm, Astah, StarUML</li>
+                        <li><strong>Controle de Versão:</strong> Git, GitHub, GitLab</li>
+                        <li><strong>Ferramentas CASE:</strong> Enterprise Architect, Rational Rose</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <div class="accordion-header">📈 Conclusão e Mensagem Final</div>
+                <div class="accordion-body">
+                    <p>Analistas de sistemas bem-sucedidos combinam habilidades técnicas, interpessoais e de negócio. Falhas em sistemas geralmente nascem de requisitos mal coletados ou falta de envolvimento dos usuários. A evolução para metodologias ágeis e uso inteligente de dados (Big Data, IA, IoT) é imprescindível para organizações modernas.</p>
+                    <p><strong>No caso Greenfield:</strong> A análise profunda revelou que a solução não era apenas tecnológica, mas também de mudança cultural e de processos.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. OBJETIVOS DE APRENDIZAGEM -->
+    <div class="card">
+        <h2>2. 🎯 Objetivos de Aprendizagem</h2>
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill">0%</div>
+            </div>
+        </div>
+        <div class="objectives-list" id="objectivesList">
+            <label class="objective-item"><input type="checkbox" data-points="20"> 📌 Nível 1 - Lembrar/Compreender: Definir análise de sistemas e diferenciar de projeto</label>
+            <label class="objective-item"><input type="checkbox" data-points="25"> 🎯 Nível 2 - Aplicar/Analisar: Identificar no caso Greenfield cada fase do CVDS</label>
+            <label class="objective-item"><input type="checkbox" data-points="30"> 💡 Nível 3 - Criar/Avaliar: Propor melhorias inovadoras (IA, IoT, Blockchain) para Greenfield</label>
+            <label class="objective-item"><input type="checkbox" data-points="25"> ✅ Validar: Concluir o quiz com 80%+ de acertos (4+ questões corretas)</label>
+        </div>
+        <div class="feedback info" id="objectiveFeedback" style="display: none;"></div>
+    </div>
+
+    <!-- 3. MÉTODO - Abas Interativas -->
+    <div class="card">
+        <h2>3. 🧠 Método de Aprendizagem Ativa</h2>
+        <div class="tabs" id="tabsContainer">
+            <button class="tab-btn active" data-tab="tabEngajar">🔥 Engajar</button>
+            <button class="tab-btn" data-tab="tabExpor">📖 Expor</button>
+            <button class="tab-btn" data-tab="tabPraticar">✍️ Praticar</button>
+            <button class="tab-btn" data-tab="tabDiscutir">💬 Discutir</button>
+            <button class="tab-btn" data-tab="tabSintetizar">📝 Sintetizar</button>
+        </div>
+        
+        <div id="tabEngajar" class="tab-content active">
+            <h3>❓ Pergunta Provocadora</h3>
+            <div style="background: #f8f9fa; padding: 20px; border-radius: 12px; margin: 15px 0;">
+                <p style="font-size: 1.1rem; font-style: italic;">"Por que a Greenfield Logística gastaria R$ 500 mil em um novo sistema de rastreamento se o problema REAL pode ser apenas falta de treinamento e processos mal definidos?"</p>
+            </div>
+            <p><strong>🎬 Analogia:</strong> Construir um sistema sem análise é como construir uma casa sem planta – risco de paredes tortas, cômodos inúteis e custos de reforma altíssimos.</p>
+            <p><strong>📊 Dado relevante:</strong> Segundo estudos, 70% dos projetos de software falham ou excedem o orçamento devido a requisitos mal coletados.</p>
+        </div>
+        
+        <div id="tabExpor" class="tab-content">
+            <h3>📊 Mapa Mental: Análise vs Projeto</h3>
+            <pre style="background: #2c3e50; color: #ecf0f1; padding: 15px; border-radius: 10px; overflow-x: auto; font-size: 0.85rem;">
+┌─────────────────────────────────────────────────────────────────┐
+│  ANÁLISE DE SISTEMAS (O QUE fazer?)                             │
+│  ├── Coleta de requisitos (entrevistas, workshops, questionários)│
+│  ├── Modelagem de processos (BPMN, fluxogramas, DFD)            │
+│  ├── Definição de regras de negócio                              │
+│  ├── Criação de casos de uso                                     │
+│  └── Prototipagem de baixa fidelidade (papel, wireframes)        │
+├─────────────────────────────────────────────────────────────────┤
+│  PROJETO DE SISTEMAS (COMO fazer?)                               │
+│  ├── Arquitetura do sistema (monolítica/microsserviços)          │
+│  ├── Modelagem de dados (DER, banco de dados)                    │
+│  ├── Design de interfaces (UI/UX)                                │
+│  ├── Definição de segurança e performance                        │
+│  └── Escolha de tecnologias específicas                          │
+└─────────────────────────────────────────────────────────────────┘
+
+NO CASO GREENFIELD:
+Análise identificou: motoristas perdem 2h/dia com papelada
+Projeto definiu: App offline-first com sincronização automática via GPS
+            </pre>
+        </div>
+        
+        <div id="tabPraticar" class="tab-content">
+            <h3>✏️ Atividade Prática - Coleta de Requisitos</h3>
+            <p><strong>Cenário:</strong> Você é o analista líder do projeto Greenfield. Complete as tarefas abaixo para demonstrar suas habilidades:</p>
+            
+            <label style="font-weight: 600;">1️⃣ Entrevista com Carla (Gerente de Operações):</label>
+            <p style="font-size: 14px; color: #666; margin-bottom: 5px;">Ela disse: "Precisamos de relatórios melhores". Que pergunta você faria para aprofundar?</p>
+            <textarea id="req1" rows="2" placeholder="Sua pergunta aqui... (mínimo 15 caracteres)"></textarea>
+            
+            <label style="font-weight: 600;">2️⃣ Técnica para motoristas (Ricardo):</label>
+            <p style="font-size: 14px; color: #666; margin-bottom: 5px;">Eles reclamam que o app "precisa ser simples". Que técnica de elicitação você usaria?</p>
+            <textarea id="req2" rows="2" placeholder="Ex: Prototipagem rápida, observação no local, questionário, workshop..."></textarea>
+            
+            <label style="font-weight: 600;">3️⃣ Requisito não funcional crítico:</label>
+            <p style="font-size: 14px; color: #666; margin-bottom: 5px;">O sistema precisa funcionar em áreas sem internet. Que solução técnica você propõe?</p>
+            <textarea id="req3" rows="2" placeholder="Ex: Sincronização offline, cache local, IndexedDB, Firebase..."></textarea>
+            
+            <button id="checkPracticeBtn">✅ Verificar Respostas</button>
+            <div id="practiceFeedback" class="feedback"></div>
+        </div>
+        
+        <div id="tabDiscutir" class="tab-content">
+            <h3>💬 Discussão Guiada (5W2H)</h3>
+            <ul style="margin-left: 20px; line-height: 2;">
+                <li><strong>What (O que):</strong> Qual o principal problema de sistema na Greenfield?</li>
+                <li><strong>Why (Por quê):</strong> Por que o sistema atual falha?</li>
+                <li><strong>Where (Onde):</strong> Em quais processos o impacto é maior?</li>
+                <li><strong>When (Quando):</strong> Quando os atrasos se tornaram críticos?</li>
+                <li><strong>Who (Quem):</strong> Quem são os stakeholders afetados?</li>
+                <li><strong>How (Como):</strong> Como a análise de sistemas pode resolver?</li>
+                <li><strong>How much (Quanto):</strong> Qual o custo estimado de não resolver?</li>
+            </ul>
+            <div class="feedback info" id="discussFeedback" style="display: none;"></div>
+            <button id="markDiscussedBtn" style="margin-top: 15px;">✓ Marcar discussão como refletida</button>
+        </div>
+        
+        <div id="tabSintetizar" class="tab-content">
+            <h3>📝 Síntese Final (3 frases)</h3>
+            <p>Escreva um resumo do que você aprendeu sobre análise de sistemas aplicada ao caso Greenfield:</p>
+            <textarea id="summaryText" rows="5" placeholder="1. O principal aprendizado sobre análise de sistemas foi...&#10;2. No caso Greenfield, a solução ideal seria...&#10;3. Como analista, eu aplicaria..."></textarea>
+            <button id="saveSummaryBtn">💾 Salvar Resumo</button>
+            <div id="summaryFeedback" class="feedback"></div>
+        </div>
+    </div>
+
+    <!-- QUIZ INTERATIVO -->
+    <div class="card">
+        <h2>⚡ Quiz de Verificação (5 questões)</h2>
+        <div id="quizContainer">
+            <div id="quizQuestion" class="quiz-question"></div>
+            <div id="quizOptions" class="quiz-options"></div>
+            <button id="quizNextBtn">Próxima Questão</button>
+            <div id="quizResult" class="feedback"></div>
+            <div id="quizScoreBadge" class="score-badge" style="display: none;"></div>
+        </div>
+    </div>
+
+    <!-- Ações Finais -->
+    <div class="action-buttons">
+        <button id="completeBtn">✅ Concluir Módulo</button>
+        <button id="resetBtn" class="btn-secondary">🔄 Reiniciar</button>
+    </div>
+    
+    <footer>
+        <p>© Tutor Moderno - Transformando análise de sistemas em experiência prática | Baseado no material do Tema 01: Introdução à Análise de Sistemas</p>
+    </footer>
+</div>
+
+<script>
+    // ==================== DADOS ====================
+    const concepts = [
+        { front: "Coleta de Requisitos", back: "Processo de identificar necessidades dos stakeholders via entrevistas, questionários, workshops e observação." },
+        { front: "Modelagem de Processos", back: "Representação visual (BPMN/DFD) do fluxo de trabalho para identificar gargalos e melhorias." },
+        { front: "Ciclo de Vida (CVDS)", back: "Fases sequenciais: Levantamento → Análise → Projeto → Implementação → Testes → Implantação → Manutenção." },
+        { front: "Metodologia Ágil", back: "Abordagem iterativa com entregas incrementais, ideal para requisitos voláteis e feedback contínuo." },
+        { front: "Requisitos Não Funcionais", back: "Atributos de qualidade: desempenho, segurança, disponibilidade, usabilidade e confiabilidade." },
+        { front: "Analista de Sistemas", back: "Profissional que atua como ponte entre usuários e tecnologia, coletando requisitos e propondo soluções." },
+        { front: "Prototipagem", back: "Criação de versões preliminares do sistema para validar requisitos com usuários rapidamente." },
+        { front: "Outsourcing", back: "Terceirização do desenvolvimento de sistemas para empresas especializadas externas." }
+    ];
+
+    const quizData = [
+        { q: "1. Qual fase do CVDS define a arquitetura do sistema e as tecnologias a serem utilizadas?", opts: ["Levantamento de requisitos", "Análise", "Projeto", "Implementação"], correct: 2 },
+        { q: "2. No caso Greenfield, qual foi o principal problema identificado na análise de sistemas?", opts: ["Falta de GPS nos caminhões", "Processos manuais e falta de integração em tempo real", "Motoristas desmotivados", "Custo alto de combustível"], correct: 1 },
+        { q: "3. Qual metodologia de desenvolvimento é MAIS adequada para o projeto Greenfield, considerando requisitos evolutivos?", opts: ["Cascata pura", "Ágil (Scrum)", "Modelo Espiral", "Codificação livre"], correct: 1 },
+        { q: "4. O que são requisitos NÃO FUNCIONAIS?", opts: ["Funcionalidades específicas do sistema", "Regras de negócio da empresa", "Atributos de qualidade: desempenho, segurança, usabilidade", "Interfaces gráficas do usuário"], correct: 2 },
+        { q: "5. Qual técnica NÃO é recomendada para coleta de requisitos em um projeto complexo como o Greenfield?", opts: ["Entrevista com stakeholders", "Questionário estruturado", "Suposição sem validação com usuários", "Workshop de co-criação"], correct: 2 }
+    ];
+
+    // Estado global
+    let currentQuiz = 0;
+    let userAnswers = new Array(5).fill(null);
+    let quizFinished = false;
+    let discussed = false;
+
+    // ==================== FLASHCARDS ====================
+    function renderFlashcards() {
+        const container = document.getElementById('flashcardGrid');
+        if (!container) return;
+        container.innerHTML = '';
+        concepts.forEach(concept => {
+            const card = document.createElement('div');
+            card.className = 'flashcard';
+            card.innerHTML = `
+                <div class="flipper">
+                    <div class="front">📚 ${concept.front}</div>
+                    <div class="back">${concept.back}</div>
+                </div>
+            `;
+            card.addEventListener('click', (e) => {
+                e.stopPropagation();
+                card.classList.toggle('flipped');
+            });
+            container.appendChild(card);
+        });
+    }
+
+    // ==================== ACCORDION ====================
+    function initAccordion() {
+        const headers = document.querySelectorAll('.accordion-header');
+        headers.forEach(header => {
+            header.addEventListener('click', function() {
+                const item = this.closest('.accordion-item');
+                item.classList.toggle('active');
+            });
+        });
+    }
+
+    // ==================== PROGRESSO ====================
+    function updateProgress() {
+        const checkboxes = document.querySelectorAll('#objectivesList input[type="checkbox"]');
+        let total = 0, achieved = 0;
+        checkboxes.forEach(cb => {
+            total += parseInt(cb.dataset.points);
+            if (cb.checked) achieved += parseInt(cb.dataset.points);
+        });
+        const percent = total === 0 ? 0 : (achieved / total) * 100;
+        const fill = document.getElementById('progressFill');
+        fill.style.width = percent + '%';
+        fill.textContent = Math.round(percent) + '%';
+        
+        const feedback = document.getElementById('objectiveFeedback');
+        if (percent === 100) {
+            feedback.textContent = '🎉 PARABÉNS! Todos os objetivos foram alcançados! Você domina análise de sistemas aplicada ao caso Greenfield.';
+            feedback.classList.add('show', 'success');
+        } else if (percent > 50) {
+            feedback.textContent = '📈 Bom progresso! Continue para completar todos os objetivos.';
+            feedback.classList.add('show', 'info');
+        } else {
+            feedback.classList.remove('show');
+        }
+        localStorage.setItem('objProgress', JSON.stringify(Array.from(checkboxes).map(cb => cb.checked)));
+    }
+
+    // ==================== TABS ====================
+    function initTabs() {
+        const btns = document.querySelectorAll('.tab-btn');
+        btns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const tabId = btn.dataset.tab;
+                document.querySelectorAll('.tab-content').forEach(tc => tc.classList.remove('active'));
+                document.getElementById(tabId).classList.add('active');
+                btns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+            });
+        });
+    }
+
+    // ==================== PRÁTICA ====================
+    function setupPractice() {
+        const checkBtn = document.getElementById('checkPracticeBtn');
+        if (!checkBtn) return;
+        checkBtn.addEventListener('click', () => {
+            const ans1 = document.getElementById('req1').value.toLowerCase();
+            const ans2 = document.getElementById('req2').value.toLowerCase();
+            const ans3 = document.getElementById('req3').value.toLowerCase();
+            const feedback = document.getElementById('practiceFeedback');
+            
+            let score = 0;
+            let messages = [];
+            
+            if (ans1.length > 15 && (ans1.includes('indicador') || ans1.includes('métrica') || ans1.includes('kpi') || ans1.includes('problema') || ans1.includes('gargalo') || ans1.includes('como'))) {
+                score++;
+                messages.push('✅ Pergunta 1: Boa pergunta de aprofundamento!');
+            } else if (ans1.length > 15) {
+                messages.push('⚠️ Pergunta 1: Válida, mas tente perguntas mais específicas sobre indicadores.');
+            } else {
+                messages.push('❌ Pergunta 1: Seja mais específico. Ex: "Quais indicadores você não consegue enxergar hoje?"');
+            }
+            
+            if (ans2.includes('prototipo') || ans2.includes('observação') || ans2.includes('workshop') || ans2.includes('questionário') || ans2.includes('entrevista') || ans2.includes('dinâmica')) {
+                score++;
+                messages.push('✅ Pergunta 2: Boa técnica de elicitação!');
+            } else if (ans2.length > 10) {
+                messages.push('⚠️ Pergunta 2: Tente técnicas como prototipagem ou observação no local.');
+            } else {
+                messages.push('❌ Pergunta 2: Pesquise técnicas de elicitação de requisitos.');
+            }
+            
+            if (ans3.includes('offline') || ans3.includes('cache') || ans3.includes('sincroniza') || ans3.includes('local') || ans3.includes('indexeddb') || ans3.includes('firebase') || ans3.includes('store')) {
+                score++;
+                messages.push('✅ Pergunta 3: Excelente solução offline-first!');
+            } else if (ans3.length > 15) {
+                messages.push('⚠️ Pergunta 3: Considere soluções offline como cache local ou sincronização.');
+            } else {
+                messages.push('❌ Pergunta 3: Pense em sincronização offline para áreas sem internet.');
+            }
+            
+            feedback.innerHTML = messages.join('<br>');
+            if (score >= 2) {
+                feedback.classList.add('show', 'success');
+                feedback.classList.remove('warning');
+                const checks = document.querySelectorAll('#objectivesList input');
+                if (checks[1] && !checks[1].checked) checks[1].checked = true;
+                updateProgress();
+            } else {
+                feedback.classList.add('show', 'warning');
+                feedback.classList.remove('success');
+            }
+        });
+    }
+
+    // ==================== QUIZ ====================
+    function renderQuiz() {
+        if (quizFinished) {
+            const score = userAnswers.filter((a, i) => a === quizData[i].correct).length;
+            document.getElementById('quizQuestion').innerHTML = `<span style="font-size: 1.1rem;">🏆 Quiz Finalizado!</span>`;
+            document.getElementById('quizOptions').innerHTML = '';
+            document.getElementById('quizResult').innerHTML = `<strong>Sua pontuação: ${score}/5</strong><br>${score >= 4 ? 'Parabéns! Você está pronto para ser analista!' : 'Revise os conceitos e tente novamente.'}`;
+            document.getElementById('quizResult').classList.add('show', 'success');
+            document.getElementById('quizNextBtn').style.display = 'none';
+            document.getElementById('quizScoreBadge').style.display = 'inline-block';
+            document.getElementById('quizScoreBadge').textContent = `🎯 Score: ${score}/5`;
+            
+            if (score >= 4) {
+                const checks = document.querySelectorAll('#objectivesList input');
+                if (checks[3] && !checks[3].checked) checks[3].checked = true;
+                updateProgress();
+            }
+            return;
+        }
+        
+        const q = quizData[currentQuiz];
+        document.getElementById('quizQuestion').innerHTML = q.q;
+        let optsHtml = '';
+        q.opts.forEach((opt, idx) => {
+            const checked = (userAnswers[currentQuiz] === idx) ? 'checked' : '';
+            optsHtml += `<label class="quiz-option"><input type="radio" name="quizOpt" value="${idx}" ${checked}> ${opt}</label>`;
+        });
+        document.getElementById('quizOptions').innerHTML = optsHtml;
+        document.getElementById('quizNextBtn').innerHTML = currentQuiz === 4 ? 'Finalizar Quiz' : 'Próxima →';
+        document.getElementById('quizResult').classList.remove('show');
+    }
+    
+    function setupQuiz() {
+        const nextBtn = document.getElementById('quizNextBtn');
+        nextBtn.addEventListener('click', () => {
+            if (quizFinished) return;
+            const selected = document.querySelector('input[name="quizOpt"]:checked');
+            if (!selected) {
+                const resultDiv = document.getElementById('quizResult');
+                resultDiv.innerHTML = '⚠️ Selecione uma resposta antes de continuar!';
+                resultDiv.classList.add('show', 'warning');
+                return;
+            }
+            userAnswers[currentQuiz] = parseInt(selected.value);
+            if (currentQuiz < 4) {
+                currentQuiz++;
+                renderQuiz();
+            } else {
+                quizFinished = true;
+                renderQuiz();
+            }
+        });
+    }
+    
+    // ==================== SÍNTESE ====================
+    function setupSummary() {
+        const saveBtn = document.getElementById('saveSummaryBtn');
+        saveBtn.addEventListener('click', () => {
+            const summary = document.getElementById('summaryText').value;
+            if (summary.trim().length > 50) {
+                const feedback = document.getElementById('summaryFeedback');
+                feedback.innerHTML = '✅ Resumo salvo com sucesso! Objetivo de criação alcançado.';
+                feedback.classList.add('show', 'success');
+                setTimeout(() => feedback.classList.remove('show'), 3000);
+                const checks = document.querySelectorAll('#objectivesList input');
+                if (checks[2] && !checks[2].checked) checks[2].checked = true;
+                updateProgress();
+                localStorage.setItem('savedSummary', summary);
+            } else {
+                const feedback = document.getElementById('summaryFeedback');
+                feedback.innerHTML = '⚠️ Escreva um resumo mais detalhado (mínimo 50 caracteres).';
+                feedback.classList.add('show', 'warning');
+                setTimeout(() => feedback.classList.remove('show'), 3000);
+            }
+        });
+        
+        const saved = localStorage.getItem('savedSummary');
+        if (saved) {
+            document.getElementById('summaryText').value = saved;
+        }
+    }
+    
+    // ==================== DISCUSSÃO ====================
+    function setupDiscuss() {
+        const markBtn = document.getElementById('markDiscussedBtn');
+        markBtn.addEventListener('click', () => {
+            if (!discussed) {
+                discussed = true;
+                const feedback = document.getElementById('discussFeedback');
+                feedback.innerHTML = '✅ Ótimo! A reflexão sobre os 5W2H é fundamental para entender o problema antes de propor solução.';
+                feedback.classList.add('show', 'success');
+                setTimeout(() => feedback.classList.remove('show'), 3000);
+                const checks = document.querySelectorAll('#objectivesList input');
+                if (checks[0] && !checks[0].checked) checks[0].checked = true;
+                updateProgress();
+            }
+        });
+    }
+    
+    // ==================== COMPLETAR MÓDULO ====================
+    function completeModule() {
+        const checks = document.querySelectorAll('#objectivesList input');
+        let allChecked = true;
+        checks.forEach(cb => {
+            if (!cb.checked) allChecked = false;
+        });
+        
+        if (!allChecked) {
+            const feedback = document.getElementById('objectiveFeedback');
+            feedback.innerHTML = '⚠️ Complete todos os objetivos antes de concluir o módulo!';
+            feedback.classList.add('show', 'warning');
+            setTimeout(() => feedback.classList.remove('show'), 3000);
+            return;
+        }
+        
+        const feedback = document.getElementById('objectiveFeedback');
+        feedback.innerHTML = '🎉 PARABÉNS! Módulo "Análise de Sistemas - Greenfield Logística" concluído com sucesso! 🎉';
+        feedback.classList.add('show', 'success');
+        
+        // Confete simples
+        for (let i = 0; i < 30; i++) {
+            setTimeout(() => {
+                const conf = document.createElement('div');
+                conf.textContent = '🎊';
+                conf.style.position = 'fixed';
+                conf.style.left = Math.random() * 100 + '%';
+                conf.style.top = '0px';
+                conf.style.fontSize = (20 + Math.random() * 20) + 'px';
+                conf.style.pointerEvents = 'none';
+                conf.style.zIndex = '9999';
+                conf.style.opacity = '1';
+                conf.style.transition = 'all 2s ease-out';
+                document.body.appendChild(conf);
+                setTimeout(() => {
+                    conf.style.top = '100vh';
+                    conf.style.opacity = '0';
+                    setTimeout(() => conf.remove(), 2000);
+                }, 10);
+            }, i * 50);
+        }
+        
+        localStorage.setItem('moduleCompleted', 'true');
+    }
+    
+    // ==================== RESET ====================
+    function resetModule() {
+        localStorage.clear();
+        document.querySelectorAll('#objectivesList input').forEach(cb => cb.checked = false);
+        updateProgress();
+        currentQuiz = 0;
+        userAnswers = new Array(5).fill(null);
+        quizFinished = false;
+        discussed = false;
+        renderQuiz();
+        document.getElementById('req1').value = '';
+        document.getElementById('req2').value = '';
+        document.getElementById('req3').value = '';
+        document.getElementById('summaryText').value = '';
+        document.getElementById('practiceFeedback').classList.remove('show');
+        document.getElementById('quizResult').classList.remove('show');
+        document.querySelectorAll('.accordion-item').forEach(item => item.classList.remove('active'));
+        
+        const feedback = document.getElementById('objectiveFeedback');
+        feedback.innerHTML = '🔄 Módulo reiniciado. Todos os dados foram limpos.';
+        feedback.classList.add('show', 'info');
+        setTimeout(() => feedback.classList.remove('show'), 2000);
+    }
+    
+    // ==================== CARREGAR PROGRESSO ====================
+    function loadProgress() {
+        const saved = localStorage.getItem('objProgress');
+        if (saved) {
+            const states = JSON.parse(saved);
+            const checks = document.querySelectorAll('#objectivesList input');
+            if (states.length === checks.length) {
+                checks.forEach((cb, i) => cb.checked = states[i]);
+            }
+            updateProgress();
+        }
+    }
+    
+    function bindObjectives() {
+        document.querySelectorAll('#objectivesList input').forEach(cb => {
+            cb.addEventListener('change', updateProgress);
+        });
+    }
+    
+    // ==================== INICIALIZAÇÃO ====================
+    document.addEventListener('DOMContentLoaded', () => {
+        renderFlashcards();
+        initAccordion();
+        initTabs();
+        setupPractice();
+        renderQuiz();
+        setupQuiz();
+        setupSummary();
+        setupDiscuss();
+        bindObjectives();
+        loadProgress();
+        document.getElementById('completeBtn').addEventListener('click', completeModule);
+        document.getElementById('resetBtn').addEventListener('click', resetModule);
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Avaliação - Análise de Sistemas | Greenfield Logística</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #0f3460, #16213e);
+            border-radius: 20px;
+            padding: 25px 30px;
+            margin-bottom: 25px;
+            text-align: center;
+            border-bottom: 3px solid #e94560;
+        }
+
+        .header h1 {
+            color: white;
+            font-size: 1.6rem;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #ccc;
+            font-size: 0.9rem;
+        }
+
+        .badge {
+            display: inline-block;
+            background: #e94560;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin-top: 10px;
+        }
+
+        .question-card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            transition: all 0.3s;
+        }
+
+        .question-card.correct {
+            border-left: 5px solid #06d6a0;
+            background: #f0fff4;
+        }
+
+        .question-card.wrong {
+            border-left: 5px solid #e94560;
+            background: #fff0f0;
+        }
+
+        .question-number {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin-bottom: 15px;
+        }
+
+        .question-text {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 20px;
+            line-height: 1.4;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .option {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 15px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background 0.3s;
+            border: 1px solid #e0e0e0;
+        }
+
+        .option:hover {
+            background: #e9ecef;
+        }
+
+        .option input {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .option label {
+            flex: 1;
+            cursor: pointer;
+            font-size: 0.95rem;
+            color: #333;
+        }
+
+        .vf-options {
+            display: flex;
+            gap: 20px;
+        }
+
+        .feedback {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            display: none;
+        }
+
+        .feedback.show {
+            display: block;
+        }
+
+        .feedback.correct-feedback {
+            background: #d4edda;
+            color: #155724;
+            border-left: 4px solid #06d6a0;
+        }
+
+        .feedback.wrong-feedback {
+            background: #f8d7da;
+            color: #721c24;
+            border-left: 4px solid #e94560;
+        }
+
+        .progress-container {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+
+        .progress-bar {
+            background: #e0e0e0;
+            border-radius: 10px;
+            height: 30px;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #06d6a0, #06d6a0);
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .stat {
+            background: #f8f9fa;
+            padding: 10px 15px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+        }
+
+        .stat span {
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        /* Resultado summary após verificação */
+        .result-summary {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 25px;
+            display: none;
+        }
+
+        .result-summary.show {
+            display: block;
+        }
+
+        .result-summary.correct-bg {
+            background: linear-gradient(135deg, #f0fff4, #e8f5e9);
+            border-left: 5px solid #06d6a0;
+        }
+
+        .result-summary.wrong-bg {
+            background: linear-gradient(135deg, #fff0f0, #fce4ec);
+            border-left: 5px solid #e94560;
+        }
+
+        .result-summary h3 {
+            margin-bottom: 15px;
+        }
+
+        .result-grid {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .result-card {
+            text-align: center;
+            padding: 15px 25px;
+            border-radius: 15px;
+            background: white;
+            min-width: 120px;
+        }
+
+        .result-card .value {
+            font-size: 2rem;
+            font-weight: bold;
+        }
+
+        .result-card .label {
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        .result-card.correct .value { color: #06d6a0; }
+        .result-card.wrong .value { color: #e94560; }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 20px;
+            margin-bottom: 30px;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102,126,234,0.4);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .btn-success {
+            background: #06d6a0;
+            color: #1a1a2e;
+        }
+
+        .result-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            visibility: hidden;
+            opacity: 0;
+            transition: all 0.3s;
+        }
+
+        .result-modal.show {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .result-content {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 500px;
+            text-align: center;
+        }
+
+        .score-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            margin: 20px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2.5rem;
+            font-weight: bold;
+        }
+
+        footer {
+            text-align: center;
+            color: #888;
+            font-size: 0.75rem;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 600px) {
+            .question-card {
+                padding: 18px;
+            }
+            .question-text {
+                font-size: 1rem;
+            }
+            .option label {
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>📋 Avaliação - Análise de Sistemas</h1>
+        <p>Baseado no protótipo Greenfield Logística S.A. | 25 questões objetivas</p>
+        <div class="badge">🎯 Responda todas as questões e clique em "Verificar" para ver seu desempenho</div>
+    </div>
+
+    <!-- Barra de progresso (apenas respondidas) -->
+    <div class="progress-container">
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill">0%</div>
+        </div>
+        <div class="stats">
+            <div class="stat">📝 Respondidas: <span id="answeredCount">0</span>/25</div>
+        </div>
+    </div>
+
+    <!-- Resultado summary (aparece após verificação) -->
+    <div id="resultSummary" class="result-summary">
+        <h3>📊 Resultado da verificação</h3>
+        <div class="result-grid">
+            <div class="result-card correct">
+                <div class="value" id="summaryCorrect">0</div>
+                <div class="label">✅ Acertos</div>
+            </div>
+            <div class="result-card wrong">
+                <div class="value" id="summaryWrong">0</div>
+                <div class="label">❌ Erros</div>
+            </div>
+            <div class="result-card">
+                <div class="value" id="summaryPercent">0%</div>
+                <div class="label">🎯 Aproveitamento</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="questionsContainer"></div>
+
+    <div class="action-buttons">
+        <button class="btn btn-primary" id="checkAllBtn">✅ Verificar respostas</button>
+        <button class="btn btn-secondary" id="resetBtn">🔄 Limpar tudo</button>
+        <button class="btn btn-success" id="submitBtn">📊 Finalizar prova</button>
+    </div>
+
+    <footer>
+        <p>© Greenfield Logística S.A. | Clique em "Verificar respostas" para corrigir | "Finalizar prova" para nota final</p>
+    </footer>
+</div>
+
+<div id="resultModal" class="result-modal">
+    <div class="result-content">
+        <h2>🎉 Prova Finalizada!</h2>
+        <div class="score-circle" id="finalScore">0%</div>
+        <p id="resultMessage"></p>
+        <div id="resultDetails" style="margin: 15px 0; text-align: left;"></div>
+        <button class="btn btn-primary" onclick="closeResultModal()">Fechar</button>
+    </div>
+</div>
+
+<script>
+    // Dados das 25 questões
+    const questions = [
+        { text: "No protótipo, qual é uma das 4 métricas exibidas no dashboard?", options: ["Temperatura da carga", "Veículos em rota", "Quilometragem total", "Consumo de combustível"], correct: 1, type: "mc", feedback: "As 4 métricas são: Veículos em rota, Entregas hoje, Pontualidade e Tempo médio para entrega (ETA)." },
+        { text: "O status 'returning' no protótipo significa:", options: ["Veículo está indo para o cliente", "Veículo retornando à base após entrega", "Veículo aguardando nova rota", "Veículo em manutenção"], correct: 1, type: "mc", feedback: "'Returning' indica que a entrega foi concluída e o veículo está retornando à base." },
+        { text: "Ao selecionar um veículo no protótipo, qual informação NÃO aparece nos detalhes?", options: ["Nome do motorista", "Endereço do cliente", "Histórico de manutenção", "Previsão de chegada (ETA)"], correct: 2, type: "mc", feedback: "O protótipo mostra motorista, cliente, endereço, ETA e progresso, mas não histórico de manutenção." },
+        { text: "Como o protótipo simula a comunicação com o motorista?", options: ["Ligação real por VoIP", "Chat escrito", "Botão 'Contatar motorista' com notificação simulada", "E-mail automático"], correct: 2, type: "mc", feedback: "O botão 'Contatar motorista' dispara uma notificação simulando a comunicação." },
+        { text: "Qual elemento visual indica que um veículo está selecionado no mapa?", options: ["Marcador vermelho", "Brilho/borda verde", "Ícone piscando", "Número do veículo em destaque"], correct: 1, type: "mc", feedback: "O veículo selecionado fica com box-shadow e borda verde (#06d6a0)." },
+        { text: "Qual das opções abaixo é um requisito FUNCIONAL do protótipo?", options: ["Tempo real", "Usabilidade", "Rastrear veículos no mapa", "Desempenho"], correct: 2, type: "mc", feedback: "Rastrear veículos é uma funcionalidade (O QUE o sistema faz). Os demais são requisitos não funcionais (COMO faz)." },
+        { text: "Qual requisito NÃO FUNCIONAL é simulado pelo protótipo?", options: ["Cadastro de clientes", "Notificações automáticas", "Atualização em tempo real", "Lista de veículos"], correct: 2, type: "mc", feedback: "Atualização em tempo real é um atributo de qualidade (não funcional). Os demais são funcionalidades." },
+        { text: "Qual pergunta um analista FARIA a um motorista após testar o protótipo?", options: ["Qual a cor do sistema?", "Qual funcionalidade falta para seu trabalho?", "Quantas linhas de código tem?", "Qual o custo do servidor?"], correct: 1, type: "mc", feedback: "A pergunta deve focar na experiência do usuário e necessidades não atendidas." },
+        { text: "Sobre metodologias: este sistema NÃO seria ideal para modelo Cascata porque:", options: ["Cascata é mais barato", "Requisitos podem mudar (motoristas vão sugerir melhorias)", "Cascata não permite programação", "O sistema é muito pequeno"], correct: 1, type: "mc", feedback: "Cascata exige requisitos estáveis. No sistema de logística, feedback dos usuários gera mudanças contínuas." },
+        { text: "Quando uma entrega é concluída no protótipo, o que NÃO acontece?", options: ["Status muda para 'returning'", "Progresso vai para 100%", "Veículo é excluído do mapa", "Notificação é exibida"], correct: 2, type: "mc", feedback: "O veículo continua no mapa, mas muda de status para 'returning' (retornando à base)." },
+        { text: "Qual problema da Greenfield NÃO foi resolvido pelo protótipo?", options: ["Rastreamento manual", "Visibilidade do atendimento", "Otimização de rotas com IA", "Dashboard com métricas"], correct: 2, type: "mc", feedback: "O protótipo mostra rastreamento, mas NÃO implementa roteirização inteligente com IA." },
+        { text: "Melhoria com IA que poderia ser adicionada ao sistema:", options: ["Tela mais bonita", "Roteirização preditiva das rotas", "Mais botões", "Cores diferentes"], correct: 1, type: "mc", feedback: "IA pode otimizar rotas baseado em trânsito, clima e histórico de entregas." },
+        { text: "Na metodologia Ágil (Scrum), qual funcionalidade estaria na Sprint 1 (MVP)?", options: ["Relatórios avançados", "Integração com ERP", "Rastreamento básico no mapa", "IA de roteirização"], correct: 2, type: "mc", feedback: "MVP deve ter o core: rastrear veículos e concluir entregas. Melhorias complexas vêm depois." },
+        { text: "Risco de SEGURANÇA não abordado pelo protótipo:", options: ["Motorista se perder", "Atraso na entrega", "Dados de localização expostos", "Caminhão quebrar"], correct: 2, type: "mc", feedback: "O protótipo não tem criptografia, autenticação ou controle de acesso - riscos graves de segurança." },
+        { text: "Critério relevante para escolher um fornecedor terceirizado:", options: ["Cor da logo", "Experiência em sistemas de logística", "Número de funcionários", "Tamanho do escritório"], correct: 1, type: "mc", feedback: "Experiência comprovada no domínio do negócio é essencial para terceirização." },
+        { text: "O protótipo resolve completamente o problema de áreas sem internet.", options: ["Verdadeiro", "Falso"], correct: 1, type: "vf", feedback: "FALSO - O protótipo não simula modo offline, uma limitação importante para áreas rurais." },
+        { text: "Notificações automáticas ajudam a reduzir ligações para a central de atendimento.", options: ["Verdadeiro", "Falso"], correct: 0, type: "vf", feedback: "VERDADEIRO - Clientes recebem atualizações automáticas, reduzindo a demanda na central." },
+        { text: "O modelo Cascata é mais flexível que o Ágil para mudanças durante o projeto.", options: ["Verdadeiro", "Falso"], correct: 1, type: "vf", feedback: "FALSO - Cascata é rígido; Ágil foi criado exatamente para lidar com mudanças frequentes." },
+        { text: "O protótipo poderia ser usado para validar requisitos com os motoristas antes do desenvolvimento final.", options: ["Verdadeiro", "Falso"], correct: 0, type: "vf", feedback: "VERDADEIRO - Protótipos são ferramentas de validação de requisitos com usuários reais." },
+        { text: "A barra de progresso no protótipo indica o tempo restante em minutos.", options: ["Verdadeiro", "Falso"], correct: 1, type: "vf", feedback: "FALSO - A barra de progresso indica o percentual da rota concluída, não tempo em minutos." },
+        { text: "Segurança da informação é um requisito funcional.", options: ["Verdadeiro", "Falso"], correct: 1, type: "vf", feedback: "FALSO - Segurança é requisito NÃO FUNCIONAL (atributo de qualidade)." },
+        { text: "Motoristas são stakeholders importantes para testar o protótipo.", options: ["Verdadeiro", "Falso"], correct: 0, type: "vf", feedback: "VERDADEIRO - Motoristas são usuários finais e podem apontar problemas de usabilidade." },
+        { text: "O custo do projeto NÃO deve ser considerado na escolha entre desenvolvimento interno e terceirização.", options: ["Verdadeiro", "Falso"], correct: 1, type: "vf", feedback: "FALSO - Custo é um dos principais fatores na decisão de terceirização." },
+        { text: "O protótipo atual já tem todos os requisitos para ser usado em produção.", options: ["Verdadeiro", "Falso"], correct: 1, type: "vf", feedback: "FALSO - Faltam segurança, modo offline, integrações e conformidade com LGPD." },
+        { text: "Relatórios gerenciais são importantes para análise de desempenho da frota.", options: ["Verdadeiro", "Falso"], correct: 0, type: "vf", feedback: "VERDADEIRO - Gestores precisam de dados históricos e indicadores para tomada de decisão." }
+    ];
+
+    // Armazenar respostas e resultados
+    let userAnswers = new Array(25).fill(null);
+    let questionResult = new Array(25).fill(null); // 'correct', 'wrong', ou null
+    let hasVerified = false;
+
+    function renderQuestions() {
+        const container = document.getElementById('questionsContainer');
+        container.innerHTML = '';
+        
+        questions.forEach((q, idx) => {
+            const card = document.createElement('div');
+            card.className = 'question-card';
+            if (questionResult[idx] === 'correct') card.classList.add('correct');
+            if (questionResult[idx] === 'wrong') card.classList.add('wrong');
+            
+            const qNumber = idx + 1;
+            const tipoLabel = q.type === 'vf' ? '⚖️ Verdadeiro ou Falso' : '🔘 Múltipla Escolha';
+            
+            let optionsHtml = '';
+            if (q.type === 'mc') {
+                optionsHtml = '<div class="options">';
+                q.options.forEach((opt, optIdx) => {
+                    const isChecked = (userAnswers[idx] === optIdx);
+                    optionsHtml += `
+                        <div class="option" onclick="selectOption(${idx}, ${optIdx})">
+                            <input type="radio" name="q${idx}" value="${optIdx}" ${isChecked ? 'checked' : ''}>
+                            <label>${String.fromCharCode(65 + optIdx)}. ${opt}</label>
+                        </div>
+                    `;
+                });
+                optionsHtml += '</div>';
+            } else {
+                optionsHtml = `
+                    <div class="vf-options">
+                        <div class="option" onclick="selectOption(${idx}, 0)">
+                            <input type="radio" name="q${idx}" value="0" ${userAnswers[idx] === 0 ? 'checked' : ''}>
+                            <label>✅ Verdadeiro</label>
+                        </div>
+                        <div class="option" onclick="selectOption(${idx}, 1)">
+                            <input type="radio" name="q${idx}" value="1" ${userAnswers[idx] === 1 ? 'checked' : ''}>
+                            <label>❌ Falso</label>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            card.innerHTML = `
+                <div class="question-number">Questão ${qNumber} | ${tipoLabel}</div>
+                <div class="question-text">${q.text}</div>
+                ${optionsHtml}
+                <div class="feedback" id="feedback${idx}">
+                    <strong>💡 Comentário:</strong> ${q.feedback}
+                </div>
+            `;
+            container.appendChild(card);
+        });
+    }
+    
+    window.selectOption = function(qIndex, optIndex) {
+        userAnswers[qIndex] = optIndex;
+        // Limpa o resultado anterior desta questão
+        questionResult[qIndex] = null;
+        hasVerified = false;
+        
+        // Remove classes de correção do card
+        const cards = document.querySelectorAll('.question-card');
+        if (cards[qIndex]) {
+            cards[qIndex].classList.remove('correct', 'wrong');
+        }
+        
+        // Esconde feedback
+        const feedback = document.getElementById(`feedback${qIndex}`);
+        if (feedback) feedback.classList.remove('show');
+        
+        // Esconde summary
+        document.getElementById('resultSummary').classList.remove('show');
+        
+        updateStatsAndProgress();
+    };
+    
+    function checkAllQuestions() {
+        let correctCount = 0;
+        let answeredCount = 0;
+        
+        for (let i = 0; i < questions.length; i++) {
+            if (userAnswers[i] !== null) {
+                answeredCount++;
+                const isCorrect = (userAnswers[i] === questions[i].correct);
+                if (isCorrect) {
+                    correctCount++;
+                    questionResult[i] = 'correct';
+                } else {
+                    questionResult[i] = 'wrong';
+                }
+                
+                // Atualizar UI
+                const cards = document.querySelectorAll('.question-card');
+                if (cards[i]) {
+                    cards[i].classList.remove('correct', 'wrong');
+                    cards[i].classList.add(questionResult[i] === 'correct' ? 'correct' : 'wrong');
+                }
+                
+                const feedback = document.getElementById(`feedback${i}`);
+                if (feedback) {
+                    feedback.classList.add('show');
+                    feedback.classList.remove('correct-feedback', 'wrong-feedback');
+                    feedback.classList.add(questionResult[i] === 'correct' ? 'correct-feedback' : 'wrong-feedback');
+                }
+            }
+        }
+        
+        hasVerified = true;
+        updateStatsAndProgress();
+        updateResultSummary(correctCount, answeredCount);
+        
+        if (answeredCount < questions.length) {
+            alert(`⚠️ Você respondeu ${answeredCount} de ${questions.length} questões. As não respondidas foram ignoradas na correção.`);
+        } else {
+            alert(`✅ Verificação concluída! ${correctCount} acertos de ${questions.length} questões (${Math.round(correctCount/questions.length*100)}%).`);
+        }
+    }
+    
+    function updateResultSummary(correct, answered) {
+        const summaryDiv = document.getElementById('resultSummary');
+        const percent = answered > 0 ? Math.round((correct / answered) * 100) : 0;
+        
+        document.getElementById('summaryCorrect').textContent = correct;
+        document.getElementById('summaryWrong').textContent = answered - correct;
+        document.getElementById('summaryPercent').textContent = percent + '%';
+        
+        summaryDiv.classList.add('show');
+        if (percent >= 70) {
+            summaryDiv.classList.add('correct-bg');
+            summaryDiv.classList.remove('wrong-bg');
+        } else {
+            summaryDiv.classList.add('wrong-bg');
+            summaryDiv.classList.remove('correct-bg');
+        }
+    }
+    
+    function resetAnswers() {
+        userAnswers = new Array(25).fill(null);
+        questionResult = new Array(25).fill(null);
+        hasVerified = false;
+        
+        // Resetar todos os radios
+        document.querySelectorAll('input[type="radio"]').forEach(radio => {
+            radio.checked = false;
+        });
+        
+        // Resetar classes dos cards
+        const cards = document.querySelectorAll('.question-card');
+        cards.forEach(card => {
+            card.classList.remove('correct', 'wrong');
+        });
+        
+        // Esconder feedbacks
+        for (let i = 0; i < questions.length; i++) {
+            const feedback = document.getElementById(`feedback${i}`);
+            if (feedback) feedback.classList.remove('show');
+        }
+        
+        // Esconder summary
+        document.getElementById('resultSummary').classList.remove('show');
+        
+        updateStatsAndProgress();
+    }
+    
+    function updateStatsAndProgress() {
+        const answered = userAnswers.filter(a => a !== null).length;
+        document.getElementById('answeredCount').textContent = answered;
+        
+        const percent = (answered / questions.length) * 100;
+        const progressFill = document.getElementById('progressFill');
+        progressFill.style.width = percent + '%';
+        progressFill.textContent = Math.round(percent) + '%';
+    }
+    
+    function showFinalResult() {
+        // Verificar todas as questões respondidas
+        let answered = 0;
+        let correct = 0;
+        
+        for (let i = 0; i < questions.length; i++) {
+            if (userAnswers[i] !== null) {
+                answered++;
+                const isCorrect = (userAnswers[i] === questions[i].correct);
+                if (isCorrect) {
+                    correct++;
+                    questionResult[i] = 'correct';
+                } else {
+                    questionResult[i] = 'wrong';
+                }
+                
+                // Atualizar UI
+                const cards = document.querySelectorAll('.question-card');
+                if (cards[i]) {
+                    cards[i].classList.remove('correct', 'wrong');
+                    cards[i].classList.add(isCorrect ? 'correct' : 'wrong');
+                }
+                
+                const feedback = document.getElementById(`feedback${i}`);
+                if (feedback) {
+                    feedback.classList.add('show');
+                    feedback.classList.remove('correct-feedback', 'wrong-feedback');
+                    feedback.classList.add(isCorrect ? 'correct-feedback' : 'wrong-feedback');
+                }
+            }
+        }
+        
+        hasVerified = true;
+        updateStatsAndProgress();
+        updateResultSummary(correct, answered);
+        
+        if (answered < questions.length) {
+            alert(`⚠️ Você respondeu apenas ${answered} de ${questions.length} questões. Complete todas para uma avaliação completa.`);
+            return;
+        }
+        
+        const percentScore = (correct / questions.length) * 100;
+        const finalScoreElem = document.getElementById('finalScore');
+        finalScoreElem.textContent = Math.round(percentScore) + '%';
+        
+        let message = '';
+        let details = '';
+        
+        if (percentScore >= 90) {
+            message = '🏆 Excelente! Você domina a análise de sistemas e o caso Greenfield!';
+            details = `Nota: ${Math.round(percentScore)}% - Nível: Avançado<br>⭐ Recomendação: Parabéns! Você está pronto para desafios reais.`;
+        } else if (percentScore >= 70) {
+            message = '👍 Muito bom! Você tem boa compreensão, mas pode revisar alguns conceitos.';
+            details = `Nota: ${Math.round(percentScore)}% - Nível: Proficiente<br>📚 Recomendação: Revise as questões que errou.`;
+        } else if (percentScore >= 50) {
+            message = '📚 Bom! Revise os conceitos de requisitos e metodologias.';
+            details = `Nota: ${Math.round(percentScore)}% - Nível: Intermediário<br>📖 Recomendação: Estude novamente o material sobre análise de sistemas.`;
+        } else {
+            message = '📖 Você precisa revisar o conteúdo. Releia o material sobre análise de sistemas.';
+            details = `Nota: ${Math.round(percentScore)}% - Nível: Iniciante<br>🎯 Recomendação: Foque nos conceitos básicos e pratique com o protótipo.`;
+        }
+        
+        document.getElementById('resultMessage').innerHTML = message;
+        document.getElementById('resultDetails').innerHTML = `
+            <strong>📊 Detalhes da avaliação:</strong><br><br>
+            ✅ <strong>Acertos:</strong> ${correct}/${questions.length}<br>
+            ❌ <strong>Erros:</strong> ${answered - correct}/${questions.length}<br>
+            📝 <strong>Total respondidas:</strong> ${answered}<br>
+            <br>
+            ${details}
+            <br><br>
+            <small>🎯 Para atingir 100%, estude as questões que errou e tente novamente.</small>
+        `;
+        
+        document.getElementById('resultModal').classList.add('show');
+    }
+    
+    function closeResultModal() {
+        document.getElementById('resultModal').classList.remove('show');
+    }
+    
+    // Event listeners
+    document.getElementById('checkAllBtn').addEventListener('click', checkAllQuestions);
+    document.getElementById('resetBtn').addEventListener('click', resetAnswers);
+    document.getElementById('submitBtn').addEventListener('click', showFinalResult);
+    
+    // Inicializar
+    renderQuestions();
+    updateStatsAndProgress();
+</script>
+</body>
+</html>
